@@ -1,0 +1,32 @@
+commit_msg_file="$1"
+commit_msg="$(cat "$commit_msg_file")"
+
+# Allowed types
+allowed="feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert|deps"
+
+# Pattern to check only the type at the beginning
+type_pattern="^($allowed)(\(|:)"  
+
+# Full conventional commit pattern
+full_pattern="^($allowed)\([a-z0-9_-]+\): .+"
+
+# Check for invalid type
+if ! echo "$commit_msg" | grep -qE "$type_pattern"; then
+  echo ""
+  echo "FAILED: Invalid commit type!"
+  echo "Allowed types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert"
+  echo "Your commit type must be one of those."
+  echo "Example: feat(auth): add login, fix(api): handle null"
+  echo ""
+  exit 1
+fi
+
+# Now check full pattern
+if ! echo "$commit_msg" | grep -qE "$full_pattern"; then
+  echo ""
+  echo "FAILED: Invalid commit message format!"
+  echo "Allowed format: type(scope): subject"
+  echo "Example: feat(auth): add login, fix(api): handle null"
+  echo ""
+  exit 1
+fi
