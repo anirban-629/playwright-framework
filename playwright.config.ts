@@ -26,9 +26,9 @@ export default defineConfig({
 	use: {
 		headless: false,
 		/* Base URL to use in actions like `await page.goto('')`. */
-		baseURL: 'https://demo.playwright.dev/todomvc',
+		baseURL: "https://demo.playwright.dev/todomvc",
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-		screenshot: 'only-on-failure'
+		screenshot: "only-on-failure",
 		// video: {
 		// 	mode: "on",
 		// 	size: { width: 640, height: 480 },
@@ -40,6 +40,5 @@ export default defineConfig({
 			name: "chromium",
 			use: { ...devices["Desktop Chrome"] },
 		},
-
 	],
 });
