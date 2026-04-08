@@ -7,7 +7,7 @@ test.beforeEach(async ({ page }, testInfo) => {
 	await page.goto("");
 });
 // biome-ignore lint/correctness/noEmptyPattern: < >
-test.afterEach(async ({ }, testInfo) => {
+test.afterEach(async ({}, testInfo) => {
 	logger.testEnd(testInfo.title, testInfo.status ? "PASSED" : "FAILED");
 });
 
