@@ -17,8 +17,8 @@
 		"lint": "npx @biomejs/biome check --write",
 		"commit": "npm run typecheck && npm run lint",
 		"commitlint": "commitlint --edit",
-		"ortoni:report": "npx ortoni-report show-report --dir ./test-results custom-folder --file playwright.html --port 5500",
-		"process:logs": "ts-node config/logging/ProcessLogFiles.ts"
+		"report:ortoni": "npx ortoni-report show-report --dir ./test-results custom-folder --file playwright.html --port 5500",
+		"report:html": "npx playwright show-report"
 	},
 	"keywords": [],
 	"author": {

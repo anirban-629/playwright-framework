@@ -7,6 +7,11 @@ test.beforeEach(async ({ page }, testInfo) => {
 	await page.goto("");
 });
 
+// biome-ignore lint/correctness/noEmptyPattern: <no page instance is required>
+test.afterEach(async ({}, testInfo) => {
+	logger.testEnd(testInfo.title, testInfo.status ? "PASSED" : "FAILED");
+});
+
 test.describe("New Todo", () => {
 	test("should allow me to add todo items", async ({ page, todoPage }) => {
 		// Create 1st todo.

@@ -8,9 +8,7 @@ export type IUserCredentials = {
 };
 export type IConfig = {
 	URL: string;
-	timeout: number;
-	retries: number;
-	users: IUserCredentials;
+	TIMEOUT: number;
 };
 
 export type IScreenshotOptions = {
