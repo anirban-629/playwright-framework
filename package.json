@@ -1,45 +1,45 @@
 {
-  "name": "playwright-fmwrk",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "playwright test",
-    "test:dev": "ENV=dev playwright test",
-    "test:staging": "ENV=staging playwright test",
-    "test:prod": "ENV=prod playwright test",
-    "test:headed": "playwright test --headed",
-    "test:debug": "playwright test --debug",
-    "test:ui": "playwright test --ui",
-    "test:tag": "playwright test --grep",
-    "typecheck": "tsc --noEmit",
-    "clean": "rm -rf allure-results allure-report test-results logs/*.log",
-    "prepare": "husky",
-    "lint": "npx @biomejs/biome check --write",
-    "commit": "npm run typecheck && npm run lint",
-    "commitlint": "commitlint --edit",
-    "report:ortoni": "npx ortoni-report show-report --dir ./test-results custom-folder --file playwright.html --port 5500",
-    "report:html": "npx playwright show-report"
-  },
-  "keywords": [],
-  "author": {
-    "name": "Anirban Mishra",
-    "email": "anirban.mishra@cloudkaptan.com"
-  },
-  "license": "ISC",
-  "description": "",
-  "devDependencies": {
-    "@biomejs/biome": "2.3.8",
-    "@playwright/test": "^1.57.0",
-    "@types/chance": "^1.1.7",
-    "@types/node": "^25.5.2",
-    "chance": "^1.1.13",
-    "dotenv": "^17.2.3",
-    "husky": "^9.1.7",
-    "ortoni-report": "^4.0.8",
-    "speakeasy": "^2.0.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^6.0.2",
-    "winston": "^3.19.0",
-    "winston-daily-rotate-file": "^5.0.0"
-  }
+	"name": "playwright-fmwrk",
+	"version": "1.0.0",
+	"main": "index.js",
+	"scripts": {
+		"test": "playwright test",
+		"test:dev": "ENV=dev playwright test",
+		"test:staging": "ENV=staging playwright test",
+		"test:prod": "ENV=prod playwright test",
+		"test:headed": "playwright test --headed",
+		"test:debug": "playwright test --debug",
+		"test:ui": "playwright test --ui",
+		"test:tag": "playwright test --grep",
+		"typecheck": "tsc --noEmit",
+		"clean": "rm -rf allure-results allure-report test-results logs/*.log",
+		"prepare": "husky",
+		"lint": "npx @biomejs/biome check --write",
+		"commit": "npm run typecheck && npm run lint",
+		"commitlint": "commitlint --edit",
+		"report:ortoni": "npx ortoni-report show-report --dir ./test-results custom-folder --file playwright.html --port 5500",
+		"report:html": "npx playwright show-report"
+	},
+	"keywords": [],
+	"author": {
+		"name": "Anirban Mishra",
+		"email": "anirban.mishra@cloudkaptan.com"
+	},
+	"license": "ISC",
+	"description": "",
+	"devDependencies": {
+		"@biomejs/biome": "2.3.8",
+		"@playwright/test": "^1.57.0",
+		"@types/chance": "^1.1.7",
+		"@types/node": "^25.5.2",
+		"chance": "^1.1.13",
+		"dotenv": "^17.2.3",
+		"husky": "^9.1.7",
+		"ortoni-report": "^4.0.8",
+		"speakeasy": "^2.0.0",
+		"ts-node": "^10.9.2",
+		"typescript": "^6.0.2",
+		"winston": "^3.19.0",
+		"winston-daily-rotate-file": "^5.0.0"
+	}
 }
