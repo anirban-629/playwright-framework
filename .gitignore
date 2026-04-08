@@ -175,3 +175,4 @@ logs/*
 
 # Test Execution Audit File for tracking - 
 *test-execution-audit.json
+ortoni-report

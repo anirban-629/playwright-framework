@@ -2,16 +2,19 @@ import { execSync } from "node:child_process";
 import * as os from "node:os";
 import type { OrtoniReportConfig } from "ortoni-report";
 
-const gitUserName = execSync("git config user.name", {
-	encoding: "utf8",
-}).trim();
+const gitUserName =
+	process.env.ENV === "dev"
+		? execSync("git config user.name", {
+				encoding: "utf8",
+			}).trim()
+		: "Test User";
 
 const timestamp = `${new Date().toLocaleString("en-US", { month: "short" })}, ${new Date().getFullYear()} ${new Date().toLocaleTimeString("en-US", { hour12: false })}`;
 
 export const ortoniReportConfig: OrtoniReportConfig = {
 	// open: process.env.CI ? "never" : "always",
 	open: "never",
-	folderPath: "./test-results",
+	folderPath: "./ortoni-report",
 	title: "Ortoni Test Report",
 	filename: "playwright.html",
 	projectName: "Playwright Boilerplate",
