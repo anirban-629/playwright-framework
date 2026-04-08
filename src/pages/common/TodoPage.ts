@@ -17,8 +17,8 @@ export class TodoPage extends BasePage {
 
 	checkNumberOfCompletedTodosInLocalStorage = async (expected: number) => {
 		return await this.page.waitForFunction((e) => {
-			// biome-ignore lint/suspicious/noExplicitAny: <>
 			return (
+				// biome-ignore lint/suspicious/noExplicitAny: <Type any>
 				JSON.parse(localStorage["react-todos"]).filter((i: any) => i.completed)
 					.length === e
 			);
@@ -27,10 +27,12 @@ export class TodoPage extends BasePage {
 
 	checkTodosInLocalStorage = async (title: string) => {
 		return await this.page.waitForFunction((t) => {
-			// biome-ignore lint/suspicious/noExplicitAny: <>
-			return JSON.parse(localStorage["react-todos"])
-				.map((i: any) => i.title)
-				.includes(t);
+			return (
+				JSON.parse(localStorage["react-todos"])
+					// biome-ignore lint/suspicious/noExplicitAny: <Type any>
+					.map((i: any) => i.title)
+					.includes(t)
+			);
 		}, title);
 	};
 }
