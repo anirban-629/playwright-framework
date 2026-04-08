@@ -1,6 +1,6 @@
-import { logger } from "../../config/logging/Logger";
-import { TODO_ITEMS } from "../constants";
-import { expect, test } from "../fixtures/base.fixture";
+import { logger } from "../../../config/logging/Logger";
+import { TODO_ITEMS } from "../../constants";
+import { expect, test } from "../../fixtures/base.fixture";
 
 test.beforeEach(async ({ page }, testInfo) => {
 	logger.testStart(testInfo.title);
