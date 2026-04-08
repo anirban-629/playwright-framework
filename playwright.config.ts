@@ -1,7 +1,6 @@
-// biome-ignore assist/source/organizeImports: <IMPORT-SORTING-ERROR>
 import { defineConfig, devices } from "@playwright/test";
-import { ortoniReportConfig } from "./config/report/ortoni.config";
 import { config } from "./config/environments";
+import { ortoniReportConfig } from "./config/report/ortoni.config";
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -17,7 +16,12 @@ export default defineConfig({
 	/* Opt out of parallel tests on CI. */
 	workers: config.WORKERS,
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
-	reporter: [["ortoni-report", ortoniReportConfig], ["line"], ["html"]],
+	reporter: [
+		["line"],
+		["html"],
+		["ortoni-report", ortoniReportConfig],
+		["allure-playwright"],
+	],
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 	use: {
 		headless: config.HEADLESS,
