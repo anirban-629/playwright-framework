@@ -19,7 +19,7 @@ export default defineConfig({
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
 	reporter: [
 		["line"],
-		["html"],
+		["html", { outputFolder: "playwright-report", open: "never" }],
 		["ortoni-report", ortoniReportConfig],
 		["allure-playwright"],
 		[

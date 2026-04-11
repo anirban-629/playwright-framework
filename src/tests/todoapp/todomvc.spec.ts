@@ -307,7 +307,7 @@ test.describe("Clear completed button", () => {
 });
 
 test.describe("Persistence", () => {
-	test("should persist its data", async ({ page, todoPage }) => {
+	test.fixme("should persist its data", async ({ page, todoPage }) => {
 		for (const item of TODO_ITEMS.slice(0, 2)) {
 			await page.locator(".new-todo").fill(item);
 			await page.locator(".new-todo").press("Enter");

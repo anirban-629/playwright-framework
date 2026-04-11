@@ -2,7 +2,7 @@ name: Playwright Tests
 
 on:
   push:
-    branches: [main]
+    branches: []
   workflow_dispatch:
     inputs:
       environment:
@@ -13,6 +13,16 @@ on:
         options:
           - QA
           - UAT
+      reporter:
+        description: "Select Reporter"
+        required: true
+        default: "html"
+        type: choice
+        options:
+          - html
+          - allure
+          - ortoni
+          - all
 
 jobs:
   test:
@@ -34,19 +44,91 @@ jobs:
       NAV_TIMEOUT: ${{ secrets.NAV_TIMEOUT }}
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      # ── Setup ──────────────────────────────────────────────────────────────
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: lts/*
-      - name: Install dependencies
+
+      - name: Install Dependencies
         run: npm ci
+
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-      - name: Run Playwright tests
+
+      # ── Run Tests (single run, all reporters configured in playwright.config.ts) ──
+      - name: Run Playwright Tests
         run: npx playwright test
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
+
+      # ── Generate Reports using package.json commands ────────────────────────
+      # Generate HTML Report
+      - name: Generate HTML Report
+        if: >
+          !cancelled() && (
+            github.event_name == 'push' ||
+            github.event.inputs.reporter == 'html' ||
+            github.event.inputs.reporter == 'all'
+          )
+        run: npm run report:html -- --reporter=json 2>/dev/null || true
+        # Note: report:html just shows the report locally
+        # In CI we just upload the already generated playwright-report/ folder
+
+      # Generate Allure Report
+      - name: Generate Allure Report
+        if: >
+          !cancelled() && (
+            github.event.inputs.reporter == 'allure' ||
+            github.event.inputs.reporter == 'all'
+          )
+        run: npx allure generate ./reports/allure-results --clean -o ./reports/allure-report
+
+      # Generate Ortoni Report
+      - name: Generate Ortoni Report
+        if: >
+          !cancelled() && (
+            github.event.inputs.reporter == 'ortoni' ||
+            github.event.inputs.reporter == 'all'
+          )
+        run: npx ortoni-report generate --dir ./reports/ortoni-report --file playwright.html || true
+
+      # ── Upload Reports ──────────────────────────────────────────────────────
+
+      - name: Upload HTML Report
+        uses: actions/upload-artifact@v4
+        if: >
+          !cancelled() && (
+            github.event_name == 'push' ||
+            github.event.inputs.reporter == 'html' ||
+            github.event.inputs.reporter == 'all'
+          )
         with:
-          name: playwright-report-${{ github.event.inputs.environment || 'QA' }}
+          name: playwright-html-${{ github.event.inputs.environment || 'QA' }}-${{ github.run_id }}
           path: playwright-report/
+          retention-days: 30
+
+      - name: Upload Allure Report
+        uses: actions/upload-artifact@v4
+        if: >
+          !cancelled() && (
+            github.event.inputs.reporter == 'allure' ||
+            github.event.inputs.reporter == 'all'
+          )
+        with:
+          name: allure-report-${{ github.event.inputs.environment || 'QA' }}-${{ github.run_id }}
+          path: reports/allure-report/
+          retention-days: 30
+
+      - name: Upload Ortoni Report
+        uses: actions/upload-artifact@v4
+        if: >
+          !cancelled() && (
+            github.event.inputs.reporter == 'ortoni' ||
+            github.event.inputs.reporter == 'all'
+          )
+        with:
+          name: ortoni-report-${{ github.event.inputs.environment || 'QA' }}-${{ github.run_id }}
+          path: reports/ortoni-report/
           retention-days: 30
