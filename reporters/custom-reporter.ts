@@ -1,215 +1,241 @@
 import type {
-  Reporter,
-  TestCase,
-  TestResult,
-  TestStep,
-  Suite,
+	Reporter,
+	Suite,
+	TestCase,
+	TestResult,
+	TestStep,
 } from "@playwright/test/reporter";
 import * as fs from "fs";
 import * as path from "path";
 
 export interface SingleHtmlReporterOptions {
-  outputFile?: string;
-  title?: string;
+	outputFile?: string;
+	title?: string;
 }
 
 interface StepData {
-  title: string;
-  status: "passed" | "failed" | "skipped" | string;
-  duration: number;
-  error?: string;
-  category: string;
+	title: string;
+	status: "passed" | "failed" | "skipped" | string;
+	duration: number;
+	error?: string;
+	category: string;
 }
 
 interface ScreenshotData {
-  name: string;
-  base64: string;
+	name: string;
+	base64: string;
 }
 
 interface TestData {
-  title: string;
-  fullTitle: string;
-  status: "passed" | "failed" | "skipped" | "timedOut" | string;
-  duration: number;
-  steps: StepData[];
-  error?: string;
-  retry: number;
-  screenshots: ScreenshotData[];
+	title: string;
+	fullTitle: string;
+	status: "passed" | "failed" | "skipped" | "timedOut" | string;
+	duration: number;
+	steps: StepData[];
+	error?: string;
+	retry: number;
+	screenshots: ScreenshotData[];
 }
 
 interface SuiteData {
-  title: string;
-  tests: TestData[];
+	title: string;
+	tests: TestData[];
 }
 
 class SingleHtmlReporter implements Reporter {
-  private options: SingleHtmlReporterOptions;
-  private suites: SuiteData[] = [];
-  private startTime: number = Date.now();
+	private options: SingleHtmlReporterOptions;
+	private suites: SuiteData[] = [];
+	private startTime: number = Date.now();
 
-  constructor(options: SingleHtmlReporterOptions = {}) {
-    this.options = {
-      outputFile: options.outputFile ?? "test-report.html",
-      title: options.title ?? "Test Report",
-    };
-  }
+	constructor(options: SingleHtmlReporterOptions = {}) {
+		this.options = {
+			outputFile: options.outputFile ?? "test-report.html",
+			title: options.title ?? "Test Report",
+		};
+	}
 
-  onBegin(_config: unknown, suite: Suite): void {
-    this.startTime = Date.now();
-    this.collectSuites(suite);
-  }
+	onBegin(_config: unknown, suite: Suite): void {
+		this.startTime = Date.now();
+		this.collectSuites(suite);
+	}
 
-  private collectSuites(suite: Suite): void {
-    for (const child of suite.suites) {
-      if (child.tests.length > 0) {
-        this.suites.push({ title: child.title || "Root Suite", tests: [] });
-      }
-      this.collectSuites(child);
-    }
-  }
+	private collectSuites(suite: Suite): void {
+		for (const child of suite.suites) {
+			if (child.tests.length > 0) {
+				this.suites.push({ title: child.title || "Root Suite", tests: [] });
+			}
+			this.collectSuites(child);
+		}
+	}
 
-  onTestEnd(test: TestCase, result: TestResult): void {
-    const steps = this.collectSteps(result.steps);
+	onTestEnd(test: TestCase, result: TestResult): void {
+		const steps = this.collectSteps(result.steps);
 
-    const screenshots: ScreenshotData[] = [];
-    if (result.status === "failed" || result.status === "timedOut") {
-      for (const attachment of result.attachments) {
-        if (attachment.contentType === "image/png" && attachment.body) {
-          screenshots.push({
-            name: attachment.name,
-            base64: attachment.body.toString("base64"),
-          });
-        } else if (
-          attachment.contentType === "image/png" &&
-          attachment.path &&
-          fs.existsSync(attachment.path)
-        ) {
-          const buffer = fs.readFileSync(attachment.path);
-          screenshots.push({ name: attachment.name, base64: buffer.toString("base64") });
-        }
-      }
-    }
+		const screenshots: ScreenshotData[] = [];
+		if (result.status === "failed" || result.status === "timedOut") {
+			for (const attachment of result.attachments) {
+				if (attachment.contentType === "image/png" && attachment.body) {
+					screenshots.push({
+						name: attachment.name,
+						base64: attachment.body.toString("base64"),
+					});
+				} else if (
+					attachment.contentType === "image/png" &&
+					attachment.path &&
+					fs.existsSync(attachment.path)
+				) {
+					const buffer = fs.readFileSync(attachment.path);
+					screenshots.push({
+						name: attachment.name,
+						base64: buffer.toString("base64"),
+					});
+				}
+			}
+		}
 
-    const testData: TestData = {
-      title: test.title,
-      fullTitle: test.titlePath().join(" › "),
-      status: result.status,
-      duration: result.duration,
-      retry: result.retry,
-      steps,
-      screenshots,
-      error: result.error?.message ? this.stripAnsi(result.error.message) : undefined,
-    };
+		const testData: TestData = {
+			title: test.title,
+			fullTitle: test.titlePath().join(" › "),
+			status: result.status,
+			duration: result.duration,
+			retry: result.retry,
+			steps,
+			screenshots,
+			error: result.error?.message
+				? this.stripAnsi(result.error.message)
+				: undefined,
+		};
 
-    const suitePath = test.titlePath().slice(0, -1).join(" › ");
-    let suite = this.suites.find((s) => s.title === suitePath);
-    if (!suite) {
-      suite = { title: suitePath, tests: [] };
-      this.suites.push(suite);
-    }
-    suite.tests.push(testData);
-  }
+		const suitePath = test.titlePath().slice(0, -1).join(" › ");
+		let suite = this.suites.find((s) => s.title === suitePath);
+		if (!suite) {
+			suite = { title: suitePath, tests: [] };
+			this.suites.push(suite);
+		}
+		suite.tests.push(testData);
+	}
 
-  private collectSteps(steps: TestStep[], depth: number = 0): StepData[] {
-    const result: StepData[] = [];
-    for (const step of steps) {
-      if (
-        step.category === "pw:api" ||
-        step.category === "test.step" ||
-        step.category === "expect"
-      ) {
-        result.push({
-          title: "  ".repeat(depth) + step.title,
-          status: step.error ? "failed" : "passed",
-          duration: step.duration,
-          error: step.error?.message ? this.stripAnsi(step.error.message) : undefined,
-          category: step.category,
-        });
-      }
-      if (step.steps?.length) result.push(...this.collectSteps(step.steps, depth + 1));
-    }
-    return result;
-  }
+	private collectSteps(steps: TestStep[], depth: number = 0): StepData[] {
+		const result: StepData[] = [];
+		for (const step of steps) {
+			if (
+				step.category === "pw:api" ||
+				step.category === "test.step" ||
+				step.category === "expect"
+			) {
+				result.push({
+					title: "  ".repeat(depth) + step.title,
+					status: step.error ? "failed" : "passed",
+					duration: step.duration,
+					error: step.error?.message
+						? this.stripAnsi(step.error.message)
+						: undefined,
+					category: step.category,
+				});
+			}
+			if (step.steps?.length)
+				result.push(...this.collectSteps(step.steps, depth + 1));
+		}
+		return result;
+	}
 
-  private stripAnsi(str: string): string {
-    // biome-ignore lint/suspicious/noControlCharactersInRegex: <  >
-    return str.replace(/\x1b\[[0-9;]*m/g, "");
-  }
+	private stripAnsi(str: string): string {
+		// biome-ignore lint/suspicious/noControlCharactersInRegex: <  >
+		return str.replace(/\x1b\[[0-9;]*m/g, "");
+	}
 
-  onEnd(): void {
-    const totalDuration = Date.now() - this.startTime;
-    const allTests = this.suites.flatMap((s) => s.tests);
-    const passed = allTests.filter((t) => t.status === "passed").length;
-    const failed = allTests.filter((t) => t.status === "failed").length;
-    const skipped = allTests.filter((t) => t.status === "skipped").length;
-    const total = allTests.length;
+	onEnd(): void {
+		const totalDuration = Date.now() - this.startTime;
+		const allTests = this.suites.flatMap((s) => s.tests);
+		const passed = allTests.filter((t) => t.status === "passed").length;
+		const failed = allTests.filter((t) => t.status === "failed").length;
+		const skipped = allTests.filter((t) => t.status === "skipped").length;
+		const total = allTests.length;
 
-    const html = this.generateHtml({ passed, failed, skipped, total, totalDuration });
+		const html = this.generateHtml({
+			passed,
+			failed,
+			skipped,
+			total,
+			totalDuration,
+		});
 
-    // biome-ignore lint/style/noNonNullAssertion: < >
-    const outputPath = path.resolve(this.options.outputFile!);
-    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-    fs.writeFileSync(outputPath, html, "utf-8");
-    console.log(`\n📄 Single HTML report saved to: ${outputPath}\n`);
-  }
+		// biome-ignore lint/style/noNonNullAssertion: < >
+		const outputPath = path.resolve(this.options.outputFile!);
+		fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+		fs.writeFileSync(outputPath, html, "utf-8");
+		console.log(`\n📄 Single HTML report saved to: ${outputPath}\n`);
+	}
 
-  private formatDuration(ms: number): string {
-    if (ms < 1000) return `${ms}ms`;
-    return `${(ms / 1000).toFixed(2)}s`;
-  }
+	private formatDuration(ms: number): string {
+		if (ms < 1000) return `${ms}ms`;
+		return `${(ms / 1000).toFixed(2)}s`;
+	}
 
-  private getCategoryIcon(category: string): string {
-    if (category === "expect") return "◈";
-    if (category === "test.step") return "▶";
-    return "·";
-  }
+	private getCategoryIcon(category: string): string {
+		if (category === "expect") return "◈";
+		if (category === "test.step") return "▶";
+		return "·";
+	}
 
-  private escapeHtml(str: string): string {
-    return str
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
-  }
+	private escapeHtml(str: string): string {
+		return str
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;")
+			.replace(/"/g, "&quot;");
+	}
 
-  private generateTestsHtml(): string {
-    return this.suites
-      .map((suite) => {
-        if (!suite.tests.length) return "";
+	private generateTestsHtml(): string {
+		return this.suites
+			.map((suite) => {
+				if (!suite.tests.length) return "";
 
-        const testsHtml = suite.tests
-          .map((test, testIdx) => {
-            const statusClass =
-              test.status === "passed" ? "passed" : test.status === "failed" ? "failed" : "skipped";
-            const statusIcon = test.status === "passed" ? "✓" : test.status === "failed" ? "✗" : "○";
+				const testsHtml = suite.tests
+					.map((test, testIdx) => {
+						const statusClass =
+							test.status === "passed"
+								? "passed"
+								: test.status === "failed"
+									? "failed"
+									: "skipped";
+						const statusIcon =
+							test.status === "passed"
+								? "✓"
+								: test.status === "failed"
+									? "✗"
+									: "○";
 
-            const stepsHtml = test.steps.length
-              ? test.steps
-                .map((step) => {
-                  const icon = this.getCategoryIcon(step.category);
-                  const stepClass = step.status === "failed" ? "step-failed" : "";
-                  return `
+						const stepsHtml = test.steps.length
+							? test.steps
+									.map((step) => {
+										const icon = this.getCategoryIcon(step.category);
+										const stepClass =
+											step.status === "failed" ? "step-failed" : "";
+										return `
                   <div class="step ${stepClass}">
                     <span class="step-icon">${icon}</span>
                     <span class="step-title">${this.escapeHtml(step.title)}</span>
                     <span class="step-duration">${this.formatDuration(step.duration)}</span>
                     ${step.error ? `<div class="step-error">${this.escapeHtml(step.error)}</div>` : ""}
                   </div>`;
-                })
-                .join("")
-              : '<div class="no-steps">No steps recorded</div>';
+									})
+									.join("")
+							: '<div class="no-steps">No steps recorded</div>';
 
-            const retryBadge =
-              test.retry > 0 ? `<span class="retry-badge">Retry #${test.retry}</span>` : "";
+						const retryBadge =
+							test.retry > 0
+								? `<span class="retry-badge">Retry #${test.retry}</span>`
+								: "";
 
-            const screenshotsHtml =
-              test.screenshots.length > 0
-                ? `<div class="screenshots-section">
+						const screenshotsHtml =
+							test.screenshots.length > 0
+								? `<div class="screenshots-section">
                     <div class="screenshots-label">📷 &nbsp;Failure Screenshots</div>
                     <div class="screenshots-grid">
                       ${test.screenshots
-                  .map(
-                    (s, i) => `
+												.map(
+													(s, i) => `
                         <div class="screenshot-card">
                           <div class="screenshot-name">${this.escapeHtml(s.name)}</div>
                           <img
@@ -225,14 +251,14 @@ class SingleHtmlReporter implements Reporter {
                             <img src="data:image/png;base64,${s.base64}" alt="${this.escapeHtml(s.name)}" />
                             <div class="lb-caption">${this.escapeHtml(s.name)}</div>
                           </div>
-                        </div>`
-                  )
-                  .join("")}
+                        </div>`,
+												)
+												.join("")}
                     </div>
                   </div>`
-                : "";
+								: "";
 
-            return `
+						return `
             <div class="test ${statusClass}">
               <div class="test-header" onclick="toggleTest(this)">
                 <span class="status-pill ${statusClass}">${statusIcon} ${statusClass.toUpperCase()}</span>
@@ -243,22 +269,28 @@ class SingleHtmlReporter implements Reporter {
               </div>
               <div class="test-body">
                 <div class="steps-container">${stepsHtml}</div>
-                ${test.error
-                ? `<div class="error-block">
+                ${
+									test.error
+										? `<div class="error-block">
                       <span class="error-label">Error</span>
                       <pre>${this.escapeHtml(test.error)}</pre>
                     </div>`
-                : ""}
+										: ""
+								}
                 ${screenshotsHtml}
               </div>
             </div>`;
-          })
-          .join("");
+					})
+					.join("");
 
-        const suitePass = suite.tests.filter((t) => t.status === "passed").length;
-        const suiteFail = suite.tests.filter((t) => t.status === "failed").length;
+				const suitePass = suite.tests.filter(
+					(t) => t.status === "passed",
+				).length;
+				const suiteFail = suite.tests.filter(
+					(t) => t.status === "failed",
+				).length;
 
-        return `
+				return `
         <div class="suite">
           <div class="suite-header">
             <span class="suite-title">${this.escapeHtml(suite.title)}</span>
@@ -269,29 +301,33 @@ class SingleHtmlReporter implements Reporter {
           </div>
           ${testsHtml}
         </div>`;
-      })
-      .join("");
-  }
+			})
+			.join("");
+	}
 
-  private generateHtml(summary: {
-    passed: number;
-    failed: number;
-    skipped: number;
-    total: number;
-    totalDuration: number;
-  }): string {
-    const passRate =
-      summary.total > 0 ? Math.round((summary.passed / summary.total) * 100) : 0;
-    const overallStatus = summary.failed > 0 ? "FAILED" : "PASSED";
-    const now = new Date().toLocaleString();
+	private generateHtml(summary: {
+		passed: number;
+		failed: number;
+		skipped: number;
+		total: number;
+		totalDuration: number;
+	}): string {
+		const passRate =
+			summary.total > 0
+				? Math.round((summary.passed / summary.total) * 100)
+				: 0;
+		const overallStatus = summary.failed > 0 ? "FAILED" : "PASSED";
+		const now = new Date().toLocaleString();
 
-    return `<!DOCTYPE html>
+		return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>${// biome-ignore lint/style/noNonNullAssertion: < >
-      this.escapeHtml(this.options.title!)}</title>
+<title>${
+			// biome-ignore lint/style/noNonNullAssertion: < >
+			this.escapeHtml(this.options.title!)
+		}</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@400;600;700;800&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -429,8 +465,10 @@ class SingleHtmlReporter implements Reporter {
     <div class="brand-icon">🎭</div>
     <div class="header-left">
     
-      <h1>${// biome-ignore lint/style/noNonNullAssertion: < >
-      this.escapeHtml(this.options.title!)}</h1>
+      <h1>${
+				// biome-ignore lint/style/noNonNullAssertion: < >
+				this.escapeHtml(this.options.title!)
+			}</h1>
       <div class="run-meta">Generated ${now} · Duration: ${this.formatDuration(summary.totalDuration)}</div>
     </div>
   </div>
@@ -514,7 +552,7 @@ class SingleHtmlReporter implements Reporter {
 </script>
 </body>
 </html>`;
-  }
+	}
 }
 
 export default SingleHtmlReporter;

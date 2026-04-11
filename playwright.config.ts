@@ -21,10 +21,13 @@ export default defineConfig({
 		["html"],
 		["ortoni-report", ortoniReportConfig],
 		["allure-playwright"],
-		["./reporters/custom-reporter.ts", {
-			outputFile: "./custom-report/client-report.html",
-			title: "Login Test Report",   // optional
-		}],
+		[
+			"./reporters/custom-reporter.ts",
+			{
+				outputFile: "./custom-report/client-report.html",
+				title: "Login Test Report", // optional
+			},
+		],
 	],
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 	use: {
