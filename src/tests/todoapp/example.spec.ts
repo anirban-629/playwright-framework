@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }, testInfo) => {
 });
 
 // biome-ignore lint/correctness/noEmptyPattern: <no page instance is required>
-test.afterEach(async ({}, testInfo) => {
+test.afterEach(async ({ }, testInfo) => {
 	logger.testEnd(testInfo.title, testInfo.status ? "PASSED" : "FAILED");
 });
 
