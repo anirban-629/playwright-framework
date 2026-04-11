@@ -12,7 +12,7 @@
 		"test:ui": "playwright test --ui",
 		"test:tag": "playwright test --grep",
 		"typecheck": "tsc --noEmit",
-		"clean": "rm -rf allure-results allure-report test-results logs/*.log ortoni-report",
+		"clean": "ts-node scripts/clean.ts",
 		"prepare": "husky",
 		"lint": "npx @biomejs/biome check --write",
 		"commit": "npm run typecheck && npm run lint",

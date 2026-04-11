@@ -1,3 +1,4 @@
+// biome-ignore assist/source/organizeImports: < >
 import type {
 	Reporter,
 	Suite,
@@ -5,8 +6,8 @@ import type {
 	TestResult,
 	TestStep,
 } from "@playwright/test/reporter";
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 
 export interface SingleHtmlReporterOptions {
 	outputFile?: string;
