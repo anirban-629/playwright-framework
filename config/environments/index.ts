@@ -2,7 +2,9 @@
 import dotenv from "dotenv";
 import path from "node:path";
 
-dotenv.config({ path: path.resolve(__dirname, "../../.env") });
+if (!process.env.CI || Boolean(process.env.CI) !== true) {
+	dotenv.config({ path: path.resolve(__dirname, "../../.env") });
+}
 
 import type { IConfig } from "../../types";
 import { QAConfig } from "./QA.config";

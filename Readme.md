@@ -407,6 +407,10 @@ PW_NAV_TIMEOUT=45000
 - Avoid `waitForTimeout()` in production tests — prefer `waitForSelector`, `waitForResponse`, or `waitForLoadState`.
 - Use `test.setTimeout()` only for known slow tests like file uploads or report generation.
 
+## [Github CLI Manual](https://cli.github.com/manual/gh_variable_set)
+
+Very Helpful for secret,variable handling
+
 ## Author
 
 **Anirban Mishra**  

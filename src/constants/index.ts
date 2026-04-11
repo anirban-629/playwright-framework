@@ -3,7 +3,7 @@
  */
 export const REQUIRED_ENVS: string[] = [
 	"ENV",
-	"PARELLAL",
+	"PARALLEL",
 	"HEADLESS",
 	"RETRY",
 	"WORKERS",
