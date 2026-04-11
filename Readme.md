@@ -1,77 +1,186 @@
-### Commit Message Rule
+# Playwright Framework (playwright-fmwrk)
 
-| Type                                                              | Meaning                                             |
-| ----------------------------------------------------------------- | --------------------------------------------------- |
-| `FEAT`                                                            | New feature added                                   |
-| `FIX`                                                             | Bug fix                                             |
-| `PERF`                                                            | Performance improvement                             |
-| `DOCS`                                                            | Documentation only changes                          |
-| `STYLE`                                                           | Formatting and style (no functional change)         |
-| `REFACTOR`                                                        | Code changes without adding features or fixing bugs |
-| `TEST`                                                            | Adding or updating tests                            |
-| `BUILD`                                                           | Build or tooling related                            |
-| `CI`                                                              | CI configuration changes                            |
-| `CHORE`                                                           | Misc maintenance tasks                              |
-| `DEPS`                                                            | Dependency updates                                  |
-| _(Supported by Conventional Commits)_ ([Conventional Commits][1]) |                                                     |
+A robust Playwright-based testing framework for web application automation and end-to-end testing, designed for learning and professional use.
 
-[1]: https://www.conventionalcommits.org/en/v1.0.0-beta/?utm_source=chatgpt.com "Conventional Commits"
+## Description
 
-### Test Cases
+This framework provides a structured approach to writing and executing Playwright tests with support for multiple environments, comprehensive logging, and advanced reporting capabilities. It includes example test suites for TodoMVC application and UI basics.
 
-#### 🧾 Lead Management (1–7)
+## Features
 
-- Verify lead creation with mandatory fields
-- Verify lead creation with complete details
-- Verify lead update before conversion
-- Verify lead assignment to sales user
-- Verify duplicate lead detection
-- Verify lead status progression
-- Verify lead conversion to account, contact, and opportunity
+- **Multi-Environment Support**: Configure tests for QA, UAT, and production environments
+- **Parallel Execution**: Run tests in parallel across multiple workers
+- **Comprehensive Reporting**: Integrated with Allure, Ortoni, and custom HTML reports
+- **Logging**: Winston-based logging with test execution tracking
+- **TypeScript Support**: Full TypeScript configuration with type checking
+- **Page Object Model**: Organized page objects and fixtures for maintainable tests
+- **CI/CD Ready**: Configured for continuous integration with retry mechanisms
 
-#### 🏢 Account Management (8–12)
+## Prerequisites
 
-- Verify account creation during lead conversion
-- Verify account details auto-populated from lead
-- Verify account edit after conversion
-- Verify account hierarchy association
-- Verify duplicate account handling
+- Node.js (v16 or higher)
+- npm or yarn
 
-#### 👤 Contact Management (13–16)
+## Installation
 
-- Verify contact creation during lead conversion
-- Verify contact details mapping from lead
-- Verify contact update functionality
-- Verify primary contact association with account
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd pl-learning
+   ```
 
-#### 💼 Opportunity Management (17–24)
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-- Verify opportunity creation during lead conversion
-- Verify opportunity stage progression from qualification to close
-- Verify opportunity amount calculation
-- Verify opportunity close date update
-- Verify opportunity product association
-- Verify opportunity price book assignment
-- Verify opportunity probability update by stage
-- Verify opportunity forecast category update
+3. Set up environment variables (optional):
+   Create a `.env` file in the root directory with your configuration.
 
-#### 📦 Products, Price Books & Quotes (25–31)
+## Usage
 
-- Verify product selection for opportunity
-- Verify price book entry selection
-- Verify opportunity line item pricing calculation
-- Verify quote creation from opportunity
-- Verify quote synchronization with opportunity
-- Verify quote approval process
-- Verify quote PDF generation
+### Running Tests
 
-#### 🤝 Contract & Closure (32–39)
+Run all tests:
+```bash
+npm test
+```
 
-- Verify contract creation from accepted quote
-- Verify contract start and end date calculation
-- Verify contract association with account and opportunity
-- Verify contract activation
-- Verify contract status update
-- Verify opportunity closed as won after contract activation
-- Verify revenue reflected in sales reports
-- Verify account status update after deal closures
+Run tests in specific environment:
+```bash
+npm run test:dev      # Development
+npm run test:staging  # Staging
+npm run test:prod     # Production
+```
+
+Run tests in headed mode (visible browser):
+```bash
+npm run test:headed
+```
+
+Debug tests:
+```bash
+npm run test:debug
+```
+
+Run tests with UI mode:
+```bash
+npm run test:ui
+```
+
+Run tests with specific tags:
+```bash
+npm run test:tag "@tagname"
+```
+
+### Test Suites
+
+- **TodoMVC Tests**: Comprehensive tests for TodoMVC application functionality
+- **UI Basics Tests**: Fundamental UI interaction tests covering forms, dropdowns, and navigation
+
+## Configuration
+
+### Environment Configuration
+
+Configure test environments in `config/environments/`:
+- `QA.config.ts`: QA environment settings
+- `UAT.config.ts`: UAT environment settings
+
+### Playwright Configuration
+
+Main configuration in `playwright.config.ts`:
+- Test directory: `./src/tests`
+- Browsers: Chromium (configurable)
+- Parallel execution settings
+- Screenshot and video capture options
+
+## Reporting
+
+### View Reports
+
+HTML Report:
+```bash
+npm run report:html
+```
+
+Allure Report:
+```bash
+npm run report:allure
+```
+
+Ortoni Report:
+```bash
+npm run report:ortoni
+```
+
+## Development
+
+### Code Quality
+
+Type checking:
+```bash
+npm run typecheck
+```
+
+Linting and formatting:
+```bash
+npm run lint
+```
+
+Clean build artifacts:
+```bash
+npm run clean
+```
+
+### Pre-commit Hooks
+
+The project uses Husky for pre-commit hooks to ensure code quality.
+
+## Project Structure
+
+```
+├── config/                 # Configuration files
+│   ├── environments/       # Environment-specific configs
+│   ├── logging/           # Logging setup
+│   └── report/            # Report configurations
+├── src/
+│   ├── constants/         # Test constants
+│   ├── fixtures/          # Test fixtures
+│   ├── pages/             # Page object models
+│   ├── tests/             # Test files
+│   └── utils/             # Utility functions
+├── reporters/             # Custom reporters
+├── scripts/               # Build and utility scripts
+└── types/                 # TypeScript type definitions
+```
+
+## Contributing
+
+### Commit Message Convention
+
+This project follows [Conventional Commits](https://www.conventionalcommits.org/) specification:
+
+| Type     | Meaning                                      |
+|----------|----------------------------------------------|
+| `FEAT`   | New feature added                           |
+| `FIX`    | Bug fix                                     |
+| `PERF`   | Performance improvement                     |
+| `DOCS`   | Documentation only changes                  |
+| `STYLE`  | Formatting and style (no functional change) |
+| `REFACTOR`| Code changes without adding features or fixing bugs |
+| `TEST`   | Adding or updating tests                    |
+| `BUILD`  | Build or tooling related                    |
+| `CI`     | CI configuration changes                    |
+| `CHORE`  | Misc maintenance tasks                      |
+| `DEPS`   | Dependency updates                          |
+
+Before committing, run:
+```bash
+npm run commit
+```
+
+## Author
+
+**Anirban Mishra**  
+Email: anirbanmishra7005@gmail.com
+
