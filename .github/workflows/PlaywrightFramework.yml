@@ -120,3 +120,12 @@ jobs:
           name: ortoni-report-${{ github.event.inputs.environment || 'QA' }}-${{ github.run_id }}
           path: ortoni-report/
           retention-days: 30
+
+      - name: Upload Logs
+        uses: actions/upload-artifact@v4
+        if: >
+          !cancelled()
+        with:
+          name: Logs-${{ github.event.inputs.environment }}-${{ github.run_id }}
+          path: logs/
+          retention-days: 30
