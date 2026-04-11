@@ -1,0 +1,112 @@
+name: Playwright Tests - By Test Name
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Select Environment"
+        required: true
+        default: "QA"
+        type: choice
+        options:
+          - QA
+          - UAT
+      reporter:
+        description: "Select Reporter"
+        required: true
+        default: "html"
+        type: choice
+        options:
+          - html
+          - allure
+          - ortoni
+          - all
+      test_name:
+        description: "Test Case Name (e.g. 'should login successfully')"
+        required: true
+        type: string
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'QA' }}
+
+    env:
+      ENV: ${{ secrets.ENV }}
+      PARALLEL: ${{ secrets.PARALLEL }}
+      HEADLESS: ${{ secrets.HEADLESS }}
+      RETRY: ${{ secrets.RETRY }}
+      URL: ${{ secrets.URL }}
+      SPECIFIED_TIMEOUT: ${{ secrets.SPECIFIED_TIMEOUT }}
+      WORKERS: ${{ secrets.WORKERS }}
+      TEST_TIMEOUT: ${{ secrets.TEST_TIMEOUT }}
+      EXPECT_TIMEOUT: ${{ secrets.EXPECT_TIMEOUT }}
+      ACTION_TIMEOUT: ${{ secrets.ACTION_TIMEOUT }}
+      NAV_TIMEOUT: ${{ secrets.NAV_TIMEOUT }}
+
+    steps:
+      # ── Setup ──────────────────────────────────────────────────────────────
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      # ── Run Tests by Test Name ─────────────────────────────────────────────
+      - name: Run Playwright Tests (Test - ${{ github.event.inputs.test_name }})
+        run: npx playwright test --grep "${{ github.event.inputs.test_name }}"
+
+      # ── Generate Reports ───────────────────────────────────────────────────
+      - name: Generate Allure Report
+        if: >
+          !cancelled() && (
+            github.event.inputs.reporter == 'allure' ||
+            github.event.inputs.reporter == 'all'
+          )
+        run: npm run report:allure:ci
+
+      # ── Upload Reports ──────────────────────────────────────────────────────
+      - name: Upload HTML Report
+        uses: actions/upload-artifact@v4
+        if: >
+          !cancelled() && (
+            github.event.inputs.reporter == 'html' ||
+            github.event.inputs.reporter == 'all'
+          )
+        with:
+          name: playwright-html-${{ github.event.inputs.environment }}-${{ github.run_id }}
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Upload Allure Report
+        uses: actions/upload-artifact@v4
+        if: >
+          !cancelled() && (
+            github.event.inputs.reporter == 'allure' ||
+            github.event.inputs.reporter == 'all'
+          )
+        with:
+          name: allure-report-${{ github.event.inputs.environment }}-${{ github.run_id }}
+          path: reports/allure-report/
+          retention-days: 30
+
+      - name: Upload Ortoni Report
+        uses: actions/upload-artifact@v4
+        if: >
+          !cancelled() && (
+            github.event.inputs.reporter == 'ortoni' ||
+            github.event.inputs.reporter == 'all'
+          )
+        with:
+          name: ortoni-report-${{ github.event.inputs.environment }}-${{ github.run_id }}
+          path: ortoni-report/
+          retention-days: 30
