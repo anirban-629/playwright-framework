@@ -1,4 +1,4 @@
-import { logger } from "../../../config/logging/Logger";
+import { logger } from "../../../config/logging";
 import { TODO_ITEMS } from "../../constants";
 import { expect, test } from "../../fixtures/base.fixture";
 
@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }, testInfo) => {
 });
 
 // biome-ignore lint/correctness/noEmptyPattern: <no page instance is required>
-test.afterEach(async ({}, testInfo) => {
+test.afterEach(async ({ }, testInfo) => {
 	logger.testEnd(testInfo.title, testInfo.status ? "PASSED" : "FAILED");
 });
 

@@ -26,11 +26,11 @@ const requiredEnvVars: string[] = [
 const missing = requiredEnvVars.filter((key) => !process.env[key]);
 
 if (missing.length > 0) {
-	logger.error("\nMissing required environment variables:\n");
+	logger.error("Missing required environment variables:");
 	missing.forEach((key) => {
 		console.error(`   - ${key}`);
 	});
-	logger.error("\nMake sure your .env file is set up correctly.\n");
+	logger.error("Make sure your .env file is set up correctly.");
 	process.exit(1);
 }
 logger.info("All required environment variables are present.");

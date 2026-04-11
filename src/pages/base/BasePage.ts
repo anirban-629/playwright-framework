@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { type Locator, type Page, test } from "@playwright/test";
-import { logger } from "../../../config/logging/Logger";
+import { logger } from "../../../config/logging";
 import type { IScreenshotOptions } from "../../../types";
 
 export abstract class BasePage {
