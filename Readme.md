@@ -1,24 +1,24 @@
-
-### Commit Message Rule 
+### Commit Message Rule
 
 | Type                                                              | Meaning                                             |
 | ----------------------------------------------------------------- | --------------------------------------------------- |
-| `feat`                                                            | New feature added                                   |
-| `fix`                                                             | Bug fix                                             |
-| `perf`                                                            | Performance improvement                             |
-| `docs`                                                            | Documentation only changes                          |
-| `style`                                                           | Formatting and style (no functional change)         |
-| `refactor`                                                        | Code changes without adding features or fixing bugs |
-| `test`                                                            | Adding or updating tests                            |
-| `build`                                                           | Build or tooling related                            |
-| `ci`                                                              | CI configuration changes                            |
-| `chore`                                                           | Misc maintenance tasks                              |
-| `deps`                                                            | Dependency updates                                  |
-| *(Supported by Conventional Commits)* ([Conventional Commits][1]) |                                                     |
+| `FEAT`                                                            | New feature added                                   |
+| `FIX`                                                             | Bug fix                                             |
+| `PERF`                                                            | Performance improvement                             |
+| `DOCS`                                                            | Documentation only changes                          |
+| `STYLE`                                                           | Formatting and style (no functional change)         |
+| `REFACTOR`                                                        | Code changes without adding features or fixing bugs |
+| `TEST`                                                            | Adding or updating tests                            |
+| `BUILD`                                                           | Build or tooling related                            |
+| `CI`                                                              | CI configuration changes                            |
+| `CHORE`                                                           | Misc maintenance tasks                              |
+| `DEPS`                                                            | Dependency updates                                  |
+| _(Supported by Conventional Commits)_ ([Conventional Commits][1]) |                                                     |
 
 [1]: https://www.conventionalcommits.org/en/v1.0.0-beta/?utm_source=chatgpt.com "Conventional Commits"
 
 ### Test Cases
+
 #### 🧾 Lead Management (1–7)
 
 - Verify lead creation with mandatory fields
@@ -56,7 +56,7 @@
 - Verify opportunity forecast category update
 
 #### 📦 Products, Price Books & Quotes (25–31)
- 
+
 - Verify product selection for opportunity
 - Verify price book entry selection
 - Verify opportunity line item pricing calculation
