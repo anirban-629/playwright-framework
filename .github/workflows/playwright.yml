@@ -83,19 +83,9 @@ jobs:
             github.event.inputs.reporter == 'allure' ||
             github.event.inputs.reporter == 'all'
           )
-        run: npx allure generate ./reports/allure-results --clean -o ./reports/allure-report
-
-      # Generate Ortoni Report
-      - name: Generate Ortoni Report
-        if: >
-          !cancelled() && (
-            github.event.inputs.reporter == 'ortoni' ||
-            github.event.inputs.reporter == 'all'
-          )
-        run: npx ortoni-report generate --dir ./reports/ortoni-report --file playwright.html || true
+        run: npx allure generate ./allure-results --clean -o ./allure-report
 
       # ── Upload Reports ──────────────────────────────────────────────────────
-
       - name: Upload HTML Report
         uses: actions/upload-artifact@v4
         if: >
@@ -118,7 +108,7 @@ jobs:
           )
         with:
           name: allure-report-${{ github.event.inputs.environment || 'QA' }}-${{ github.run_id }}
-          path: reports/allure-report/
+          path: allure-report/
           retention-days: 30
 
       - name: Upload Ortoni Report
@@ -130,5 +120,5 @@ jobs:
           )
         with:
           name: ortoni-report-${{ github.event.inputs.environment || 'QA' }}-${{ github.run_id }}
-          path: reports/ortoni-report/
+          path: ortoni-report/
           retention-days: 30
