@@ -8,22 +8,14 @@ import type { IConfig } from "../../types";
 import { QAConfig } from "./QA.config";
 import { UATConfig } from "./UAT.config";
 import { logger } from "../logging";
+import { REQUIRED_ENVS } from "../../src/constants";
 
 const parseBooleanEnv = (value: string | undefined): boolean => {
 	const v = value?.toLowerCase();
 	return v === "true" || v === "1";
 };
 
-const requiredEnvVars: string[] = [
-	"ENV",
-	"PARELLAL",
-	"HEADLESS",
-	"RETRY",
-	"WORKERS",
-	"URL",
-];
-
-const missing = requiredEnvVars.filter((key) => !process.env[key]);
+const missing = REQUIRED_ENVS.filter((key) => !process.env[key]);
 
 if (missing.length > 0) {
 	logger.error("Missing required environment variables:");
@@ -35,11 +27,15 @@ if (missing.length > 0) {
 }
 logger.info("All required environment variables are present.");
 
-const ENV = process.env.ENV ?? "dev";
-const RETRY = process.env.RETRY ? Number(process.env.RETRY) : 1;
+const ENV = process.env.ENV;
+const RETRY = Number(process.env.RETRY);
 const PARALLEL = parseBooleanEnv(process.env.PARALLEL);
 const HEADLESS = parseBooleanEnv(process.env.HEADLESS);
-const WORKERS = process.env.WORKERS ? Number(process.env.WORKERS) : 1;
+const WORKERS = Number(process.env.WORKERS);
+const TEST_TIMEOUT = Number(process.env.TEST_TIMEOUT);
+const EXPECT_TIMEOUT = Number(process.env.EXPECT_TIMEOUT);
+const ACTION_TIMEOUT = Number(process.env.ACTION_TIMEOUT);
+const NAV_TIMEOUT = Number(process.env.NAV_TIMEOUT);
 
 const envSpecificConfig: IConfig = ENV === "UAT" ? UATConfig : QAConfig;
 
@@ -50,4 +46,8 @@ export const config = {
 	RETRY,
 	HEADLESS,
 	WORKERS,
+	TEST_TIMEOUT,
+	EXPECT_TIMEOUT,
+	ACTION_TIMEOUT,
+	NAV_TIMEOUT,
 };

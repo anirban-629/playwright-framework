@@ -17,8 +17,8 @@
 		"lint": "npx @biomejs/biome check --write",
 		"commit": "npm run typecheck && npm run lint",
 		"commitlint": "commitlint --edit",
-		"report:ortoni": "npx ortoni-report show-report --dir ./ortoni-report custom-folder --file playwright.html --port 5500",
-		"report:allure": "npx allure generate ./allure-results --clean && npx allure open ./allure-report",
+		"report:ortoni": "npx ortoni-report show-report --dir ./reports/ortoni-report custom-folder --file playwright.html --port 5500",
+		"report:allure": "npx allure generate ./reports/allure-results --clean && npx allure open ./reports/allure-report",
 		"report:html": "npx playwright show-report"
 	},
 	"keywords": [],

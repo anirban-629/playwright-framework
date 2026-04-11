@@ -7,6 +7,7 @@ import { ortoniReportConfig } from "./config/report/ortoni.config";
  */
 export default defineConfig({
 	testDir: "./src/tests",
+	timeout: config.TIMEOUT,
 	/* Run tests in files in parallel */
 	fullyParallel: config.PARALLEL,
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -29,8 +30,13 @@ export default defineConfig({
 			},
 		],
 	],
+	expect: {
+		timeout: config.EXPECT_TIMEOUT,
+	},
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 	use: {
+		actionTimeout: config.ACTION_TIMEOUT,
+		navigationTimeout: config.NAV_TIMEOUT,
 		headless: config.HEADLESS,
 		/* Base URL to use in actions like `await page.goto('')`. */
 		baseURL: config.URL,
