@@ -8,6 +8,7 @@ const dirs: string[] = [
 	"ortoni-report",
 	"custom-report",
 	"playwright-report",
+	"auth",
 ];
 
 const logsDir = "logs";

@@ -1,12 +1,11 @@
 // biome-ignore assist/source/organizeImports: <IMPORT SORING ERROR>
 import { expect } from "@playwright/test";
-import { BasePage } from "../base/BasePage";
+import { BasePage } from "../base/base";
 import { SAUCE_DEMO_PRODUCTS } from "../../constants";
 import { logger } from "../../../config/logging";
 
-export class SauceDemo extends BasePage {
-	async SauceDemoTest() {
-		// Verify Login Page
+export class SauceDemoPage extends BasePage {
+	async verifyLoginPage() {
 		await expect(this.page.getByText("Swag Labs")).toBeVisible();
 		await expect(this.page.locator('[data-test="username"]')).toBeVisible();
 		await expect(this.page.locator('[data-test="password"]')).toBeVisible();
@@ -17,8 +16,9 @@ export class SauceDemo extends BasePage {
 				.filter({ hasText: "Accepted usernames are:" })
 				.nth(4),
 		).toBeVisible();
+	}
 
-		// Login
+	async loginAsStandardUser() {
 		await this.page.locator('[data-test="username"]').click();
 		await this.page.locator('[data-test="username"]').fill("standard_user");
 		await this.page.locator('[data-test="password"]').click();
@@ -26,13 +26,13 @@ export class SauceDemo extends BasePage {
 		await this.page.locator('[data-test="login-button"]').click();
 		await expect(this.page.getByText("Swag Labs")).toBeVisible();
 		await expect(this.page.locator('[data-test="title"]')).toBeVisible();
-
+	}
+	async verifyAllProducts() {
 		const noOfProducts = await this.page
 			.locator('[data-test="inventory-item"]')
 			.count();
 		expect(noOfProducts === SAUCE_DEMO_PRODUCTS.length, "Count didn't match");
 
-		// Verify Each Item In Order
 		for (let i = 0; i < noOfProducts; i++) {
 			const { imgId, price, title } = SAUCE_DEMO_PRODUCTS[i];
 			await expect(

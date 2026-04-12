@@ -1,9 +1,9 @@
 import { logger } from "../../../config/logging";
 import { test } from "../../fixtures";
 
-test.beforeEach(async ({ page }, testInfo) => {
+// biome-ignore lint/correctness/noEmptyPattern: < >
+test.beforeEach(async ({}, testInfo) => {
 	logger.testStart(testInfo.title);
-	await page.goto("https://www.saucedemo.com/");
 });
 
 // biome-ignore lint/correctness/noEmptyPattern: <no page instance is required>
@@ -12,7 +12,16 @@ test.afterEach(async ({}, testInfo) => {
 });
 
 test.describe("Sauce Demo", { tag: "@saucedemo" }, async () => {
-	test("sauce", async ({ sauceDemoPage }) => {
-		await sauceDemoPage.SauceDemoTest();
+	test("sauce", async ({ sauceDemoPage, authPage }) => {
+		// await sauceDemoPage.verifyLoginPage();
+		await authPage.loginIfNeeded("standard_user");
+		// await sauceDemoPage.loginAsStandardUser();
+		await sauceDemoPage.verifyAllProducts();
+	});
+	test("sauce 1", async ({ sauceDemoPage, authPage }) => {
+		// await sauceDemoPage.verifyLoginPage();
+		await authPage.loginIfNeeded("visual_user");
+		// await sauceDemoPage.loginAsStandardUser();
+		await sauceDemoPage.verifyAllProducts();
 	});
 });
