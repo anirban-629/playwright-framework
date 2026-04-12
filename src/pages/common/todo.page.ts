@@ -1,5 +1,5 @@
 import { TODO_ITEMS } from "../../constants";
-import { BasePage } from "../base/BasePage";
+import { BasePage } from "../base/base";
 
 export class TodoPage extends BasePage {
 	createDefaultTodos = async () => {

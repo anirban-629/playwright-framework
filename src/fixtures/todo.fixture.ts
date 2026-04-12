@@ -1,5 +1,5 @@
 import { test } from "@playwright/test";
-import { TodoPage } from "../pages/common/TodoPage";
+import { TodoPage } from "../pages/common";
 
 type TestFixtures = {
 	todoPage: TodoPage;
@@ -10,8 +10,7 @@ type TestFixtures = {
  */
 
 export const todoPage = test.extend<TestFixtures>({
-	todoPage: async ({ context }, use) => {
-		const page = await context.newPage();
+	todoPage: async ({ page }, use) => {
 		const todoPage = new TodoPage(page);
 		await use(todoPage);
 	},

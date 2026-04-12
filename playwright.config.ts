@@ -35,6 +35,9 @@ export default defineConfig({
 	},
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 	use: {
+		launchOptions: {
+			slowMo: config.IS_LOCAL ? 500 : undefined,
+		},
 		actionTimeout: config.ACTION_TIMEOUT,
 		navigationTimeout: config.NAV_TIMEOUT,
 		headless: config.HEADLESS,
