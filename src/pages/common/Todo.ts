@@ -1,7 +1,7 @@
 import { TODO_ITEMS } from "../../constants";
 import { BasePage } from "../base/BasePage";
 
-export class TodoPage extends BasePage {
+export class Todo extends BasePage {
 	createDefaultTodos = async () => {
 		for (const item of TODO_ITEMS) {
 			await this.page.locator(".new-todo").fill(item);

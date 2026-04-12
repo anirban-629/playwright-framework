@@ -29,6 +29,7 @@ if (missing.length > 0) {
 }
 logger.info("All required environment variables are present.");
 
+const IS_LOCAL = Boolean(process.env.IS_LOCAL);
 const ENV = process.env.ENV;
 const RETRY = Number(process.env.RETRY);
 const PARALLEL = parseBooleanEnv(process.env.PARALLEL);
@@ -40,7 +41,6 @@ const ACTION_TIMEOUT = Number(process.env.ACTION_TIMEOUT);
 const NAV_TIMEOUT = Number(process.env.NAV_TIMEOUT);
 
 const envSpecificConfig: IConfig = ENV === "UAT" ? UATConfig : QAConfig;
-
 export const config = {
 	...envSpecificConfig,
 	ENV,
@@ -52,4 +52,5 @@ export const config = {
 	EXPECT_TIMEOUT,
 	ACTION_TIMEOUT,
 	NAV_TIMEOUT,
+	IS_LOCAL,
 };
