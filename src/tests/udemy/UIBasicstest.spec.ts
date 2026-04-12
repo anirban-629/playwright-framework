@@ -1,4 +1,4 @@
-import { expect, test } from "../../fixtures/base.fixture";
+import { expect, test } from "../../fixtures";
 
 test.describe("Udemy Tests", { tag: "@udemy" }, async () => {
 	test.fixme(
