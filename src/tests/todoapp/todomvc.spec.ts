@@ -7,7 +7,6 @@ test.beforeEach(async ({ page }, testInfo) => {
 	await page.goto("");
 });
 
-// biome-ignore lint/correctness/noEmptyPattern: <no page instance is required>
 test.afterEach(async ({}, testInfo) => {
 	logger.testEnd(testInfo.title, testInfo.status ? "PASSED" : "FAILED");
 });
@@ -213,8 +212,8 @@ test.describe("Editing", () => {
 	}) => {
 		const todoItem = page.locator(".todo-list li").nth(1);
 		await todoItem.dblclick();
-		await expect(todoItem.locator(".toggle")).not.toBeVisible();
-		await expect(todoItem.locator("label")).not.toBeVisible();
+		await expect(todoItem.locator(".toggle")).toBeHidden();
+		await expect(todoItem.locator("label")).toBeHidden();
 		await todoPage.checkNumberOfTodosInLocalStorage(3);
 	});
 
@@ -336,6 +335,7 @@ test.describe("Routing", () => {
 		// in some frameworks like Durandal
 		await todoPage.checkTodosInLocalStorage(TODO_ITEMS[0]);
 	});
+
 	test("should allow me to display active items", async ({
 		page,
 		todoPage,

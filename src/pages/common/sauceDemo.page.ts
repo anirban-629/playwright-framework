@@ -1,4 +1,3 @@
-// biome-ignore assist/source/organizeImports: <IMPORT SORING ERROR>
 import { expect } from "@playwright/test";
 import { BasePage } from "../base/base";
 import { SAUCE_DEMO_PRODUCTS } from "../../constants";

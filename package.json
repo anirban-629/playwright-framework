@@ -14,7 +14,7 @@
 		"typecheck": "tsc --noEmit",
 		"clean": "ts-node scripts/clean.ts",
 		"prepare": "husky",
-		"lint": "npx @biomejs/biome check --write",
+		"lint": "prettier --write . --ignore-path .gitignore && eslint . --fix",
 		"commit": "npm run typecheck && npm run lint",
 		"commitlint": "commitlint --edit",
 		"report:ortoni": "npx ortoni-report show-report --dir ./ortoni-report custom-folder --file playwright.html --port 5500",
@@ -29,7 +29,6 @@
 	"license": "ISC",
 	"description": "",
 	"devDependencies": {
-		"@biomejs/biome": "2.3.8",
 		"@playwright/test": "^1.59.1",
 		"@types/chance": "^1.1.7",
 		"@types/node": "^25.6.0",
@@ -37,12 +36,20 @@
 		"allure-playwright": "^3.7.0",
 		"chance": "^1.1.13",
 		"dotenv": "^17.2.3",
+		"eslint": "^10.2.0",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-playwright": "^2.10.1",
 		"husky": "^9.1.7",
 		"ortoni-report": "^4.0.8",
+		"prettier": "^3.8.3",
 		"speakeasy": "^2.0.0",
 		"ts-node": "^10.9.2",
 		"typescript": "^6.0.2",
+		"typescript-eslint": "^8.58.2",
 		"winston": "^3.19.0",
 		"winston-daily-rotate-file": "^5.0.0"
+	},
+	"dependencies": {
+		"@eslint/js": "^10.0.1"
 	}
 }

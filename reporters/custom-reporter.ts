@@ -1,4 +1,3 @@
-// biome-ignore assist/source/organizeImports: < >
 import type {
 	Reporter,
 	Suite,
@@ -63,7 +62,10 @@ class SingleHtmlReporter implements Reporter {
 	private collectSuites(suite: Suite): void {
 		for (const child of suite.suites) {
 			if (child.tests.length > 0) {
-				this.suites.push({ title: child.title || "Root Suite", tests: [] });
+				this.suites.push({
+					title: child.title || "Root Suite",
+					tests: [],
+				});
 			}
 			this.collectSuites(child);
 		}
@@ -141,7 +143,7 @@ class SingleHtmlReporter implements Reporter {
 	}
 
 	private stripAnsi(str: string): string {
-		// biome-ignore lint/suspicious/noControlCharactersInRegex: <  >
+		// eslint-disable-next-line no-control-regex
 		return str.replace(/\x1b\[[0-9;]*m/g, "");
 	}
 
@@ -161,7 +163,6 @@ class SingleHtmlReporter implements Reporter {
 			totalDuration,
 		});
 
-		// biome-ignore lint/style/noNonNullAssertion: < >
 		const outputPath = path.resolve(this.options.outputFile!);
 		fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 		fs.writeFileSync(outputPath, html, "utf-8");
@@ -325,10 +326,7 @@ class SingleHtmlReporter implements Reporter {
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>${
-			// biome-ignore lint/style/noNonNullAssertion: < >
-			this.escapeHtml(this.options.title!)
-		}</title>
+<title>${this.escapeHtml(this.options.title!)}</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@400;600;700;800&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -466,10 +464,7 @@ class SingleHtmlReporter implements Reporter {
     <div class="brand-icon">🎭</div>
     <div class="header-left">
     
-      <h1>${
-				// biome-ignore lint/style/noNonNullAssertion: < >
-				this.escapeHtml(this.options.title!)
-			}</h1>
+      <h1>${this.escapeHtml(this.options.title!)}</h1>
       <div class="run-meta">Generated ${now} · Duration: ${this.formatDuration(summary.totalDuration)}</div>
     </div>
   </div>
