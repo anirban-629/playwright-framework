@@ -1,27 +1,51 @@
 export type IUserCredentials = {
-	[key: string]: {
-		username: string;
-		password: string;
-		mfaSecret?: string;
-		name: string;
-	};
+    [key: string]: {
+        username: string;
+        password: string;
+        mfaSecret?: string;
+        name: string;
+    };
 };
 export type IConfig = {
-	URL: string;
-	TIMEOUT: number;
+    URL: string;
+    TIMEOUT: number;
 };
 
 export type IScreenshotOptions = {
-	name?: string;
-	fullPage?: boolean;
+    name?: string;
+    fullPage?: boolean;
 };
 
 export type IAPIResponse = {
-	access_token: string;
-	signature: string;
-	scope: string;
-	instance_url: string;
-	id: string;
-	token_type: string;
-	issued_at: string;
+    access_token: string;
+    signature: string;
+    scope: string;
+    instance_url: string;
+    id: string;
+    token_type: string;
+    issued_at: string;
+};
+
+export type IRBBooking = {
+    roomid: number;
+    firstname: string;
+    lastname: string;
+    depositpaid: boolean;
+    email: string;
+    phone: string;
+    bookingdates: {
+        checkin: String;
+        checkout: String;
+    };
+};
+
+export type IRBUpdateBooking = {
+    roomid: number;
+    firstname: string;
+    lastname: string;
+    depositpaid: boolean;
+    bookingdates: {
+        checkin: String;
+        checkout: String;
+    };
 };

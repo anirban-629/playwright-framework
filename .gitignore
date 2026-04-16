@@ -177,4 +177,4 @@ logs/*
 *test-execution-audit.json
 ortoni-report
 custom-report
-auth
+auth-sessions
