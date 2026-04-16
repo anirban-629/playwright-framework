@@ -8,5 +8,4 @@
 # Windows     - /r/n
 
 # Git is saying: "Your file currently uses LF, but next time Git writes it on Windows it'll convert to CRLF."
-
 # This tells Git to always use LF for these files regardless of the OS — keeping your team's code consistent whether they're on Mac or Windows.
