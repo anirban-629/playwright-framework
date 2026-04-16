@@ -29,6 +29,7 @@
 	"license": "ISC",
 	"description": "",
 	"devDependencies": {
+		"@eslint/js": "^10.0.1",
 		"@playwright/test": "^1.59.1",
 		"@types/chance": "^1.1.7",
 		"@types/node": "^25.6.0",
@@ -48,8 +49,5 @@
 		"typescript-eslint": "^8.58.2",
 		"winston": "^3.19.0",
 		"winston-daily-rotate-file": "^5.0.0"
-	},
-	"dependencies": {
-		"@eslint/js": "^10.0.1"
 	}
 }
