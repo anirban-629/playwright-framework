@@ -25,3 +25,27 @@ export type IAPIResponse = {
 	token_type: string;
 	issued_at: string;
 };
+
+export type IRBBooking = {
+	roomid: number;
+	firstname: string;
+	lastname: string;
+	depositpaid: boolean;
+	email: string;
+	phone: string;
+	bookingdates: {
+		checkin: string;
+		checkout: string;
+	};
+};
+
+export type IRBUpdateBooking = {
+	roomid: number;
+	firstname: string;
+	lastname: string;
+	depositpaid: boolean;
+	bookingdates: {
+		checkin: string;
+		checkout: string;
+	};
+};

@@ -29,6 +29,7 @@ if (missing.length > 0) {
 logger.info("All required environment variables are present.");
 
 const IS_LOCAL = Boolean(process.env.IS_LOCAL);
+const RESTFUL_API_BASE_URL = process.env.RESTFUL_API_BASE_URL;
 const ENV = process.env.ENV;
 const RETRY = Number(process.env.RETRY);
 const PARALLEL = parseBooleanEnv(process.env.PARALLEL);
@@ -38,6 +39,11 @@ const TEST_TIMEOUT = Number(process.env.TEST_TIMEOUT);
 const EXPECT_TIMEOUT = Number(process.env.EXPECT_TIMEOUT);
 const ACTION_TIMEOUT = Number(process.env.ACTION_TIMEOUT);
 const NAV_TIMEOUT = Number(process.env.NAV_TIMEOUT);
+const TOKEN_ENCRYPTION_KEY = process.env.TOKEN_ENCRYPTION_KEY!;
+const ALGORITHM = process.env.ALGORITHM!;
+const RB_USERNAME = process.env.RB_USERNAME!;
+const RB_PASSWORD = process.env.RB_PASSWORD!;
+const CRYPTO_SECRET = process.env.CRYPTO_SECRET!;
 
 const envSpecificConfig: IConfig = ENV === "UAT" ? UATConfig : QAConfig;
 export const config = {
@@ -52,4 +58,10 @@ export const config = {
 	ACTION_TIMEOUT,
 	NAV_TIMEOUT,
 	IS_LOCAL,
+	RESTFUL_API_BASE_URL,
+	TOKEN_ENCRYPTION_KEY,
+	ALGORITHM,
+	RB_USERNAME,
+	RB_PASSWORD,
+	CRYPTO_SECRET,
 };
