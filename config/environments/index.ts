@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import path from "node:path";
 
 if (!process.env.CI || Boolean(process.env.CI) !== true) {
-    dotenv.config({ path: path.resolve(__dirname, "../../.env") });
+	dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 }
 
 import type { IConfig } from "../../types";
@@ -12,19 +12,19 @@ import { logger } from "../logging";
 import { REQUIRED_ENVS } from "../../src/constants";
 
 const parseBooleanEnv = (value: string | undefined): boolean => {
-    const v = value?.toLowerCase();
-    return v === "true" || v === "1";
+	const v = value?.toLowerCase();
+	return v === "true" || v === "1";
 };
 
 const missing = REQUIRED_ENVS.filter((key) => !process.env[key]);
 
 if (missing.length > 0) {
-    logger.error("Missing required environment variables:");
-    missing.forEach((key) => {
-        console.error(`   - ${key}`);
-    });
-    logger.error("Make sure your .env file is set up correctly.");
-    process.exit(1);
+	logger.error("Missing required environment variables:");
+	missing.forEach((key) => {
+		console.error(`   - ${key}`);
+	});
+	logger.error("Make sure your .env file is set up correctly.");
+	process.exit(1);
 }
 logger.info("All required environment variables are present.");
 
@@ -42,16 +42,16 @@ const NAV_TIMEOUT = Number(process.env.NAV_TIMEOUT);
 
 const envSpecificConfig: IConfig = ENV === "UAT" ? UATConfig : QAConfig;
 export const config = {
-    ...envSpecificConfig,
-    ENV,
-    PARALLEL,
-    RETRY,
-    HEADLESS,
-    WORKERS,
-    TEST_TIMEOUT,
-    EXPECT_TIMEOUT,
-    ACTION_TIMEOUT,
-    NAV_TIMEOUT,
-    IS_LOCAL,
-    RESTFUL_API_BASE_URL,
+	...envSpecificConfig,
+	ENV,
+	PARALLEL,
+	RETRY,
+	HEADLESS,
+	WORKERS,
+	TEST_TIMEOUT,
+	EXPECT_TIMEOUT,
+	ACTION_TIMEOUT,
+	NAV_TIMEOUT,
+	IS_LOCAL,
+	RESTFUL_API_BASE_URL,
 };
