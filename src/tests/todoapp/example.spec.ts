@@ -1,14 +1,8 @@
-import { logger } from "../../../config/logging";
 import { TODO_ITEMS } from "../../constants";
 import { expect, test } from "../../fixtures";
 
-test.beforeEach(async ({ page }, testInfo) => {
-	logger.testStart(testInfo.title);
+test.beforeEach(async ({ page }) => {
 	await page.goto("");
-});
-
-test.afterEach(async ({}, testInfo) => {
-	logger.testEnd(testInfo.title, testInfo.status ? "PASSED" : "FAILED");
 });
 
 test.describe("New Todo", { tag: "@exampletodo" }, () => {
