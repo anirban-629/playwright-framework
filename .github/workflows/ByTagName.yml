@@ -35,8 +35,8 @@ jobs:
     env:
       ENV: ${{ secrets.ENV }}
       PARALLEL: ${{ secrets.PARALLEL }}
-      HEADLESS: ${{ secrets.HEADLESS }}
       IS_LOCAL: ${{ secrets.IS_LOCAL }}
+      HEADLESS: ${{ secrets.HEADLESS }}
       RETRY: ${{ secrets.RETRY }}
       URL: ${{ secrets.URL }}
       SPECIFIED_TIMEOUT: ${{ secrets.SPECIFIED_TIMEOUT }}
@@ -46,6 +46,8 @@ jobs:
       ACTION_TIMEOUT: ${{ secrets.ACTION_TIMEOUT }}
       NAV_TIMEOUT: ${{ secrets.NAV_TIMEOUT }}
       CRYPTO_SECRET: ${{ secrets.CRYPTO_SECRET }}
+      RB_USERNAME: ${{ secrets.RB_USERNAME }}
+      RB_PASSWORD: ${{ secrets.RB_PASSWORD }}
 
     steps:
       # ── Setup ──────────────────────────────────────────────────────────────
