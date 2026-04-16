@@ -1,7 +1,7 @@
 // fixtures/token-store.ts
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { decrypt, encrypt } from "../helpers/encryption";
+import { decrypt, encrypt } from "./encryption";
 import { config } from "../../../config/environments";
 import { logger } from "../../../config/logging";
 
