@@ -33,21 +33,26 @@ jobs:
     environment: ${{ github.event.inputs.environment || 'QA' }}
 
     env:
-      ENV: ${{ secrets.ENV }}
-      PARALLEL: ${{ secrets.PARALLEL }}
-      IS_LOCAL: ${{ secrets.IS_LOCAL }}
-      HEADLESS: ${{ secrets.HEADLESS }}
-      RETRY: ${{ secrets.RETRY }}
-      URL: ${{ secrets.URL }}
-      SPECIFIED_TIMEOUT: ${{ secrets.SPECIFIED_TIMEOUT }}
-      WORKERS: ${{ secrets.WORKERS }}
-      TEST_TIMEOUT: ${{ secrets.TEST_TIMEOUT }}
-      EXPECT_TIMEOUT: ${{ secrets.EXPECT_TIMEOUT }}
-      ACTION_TIMEOUT: ${{ secrets.ACTION_TIMEOUT }}
-      NAV_TIMEOUT: ${{ secrets.NAV_TIMEOUT }}
-      CRYPTO_SECRET: ${{ secrets.CRYPTO_SECRET }}
-      RB_USERNAME: ${{ secrets.RB_USERNAME }}
-      RB_PASSWORD: ${{ secrets.RB_PASSWORD }}
+      ENV: ${{secrets.ENV}}
+      PARALLEL: ${{secrets.PARALLEL}}
+      HEADLESS: ${{secrets.HEADLESS}}
+      IS_LOCAL: ${{secrets.IS_LOCAL}}
+      RETRY: ${{secrets.RETRY}}
+      WORKERS: ${{secrets.WORKERS}}
+      URL: ${{secrets.URL}}
+      QA_URL: ${{secrets.QA_URL}}
+      QA_SPECIFIED_TIMEOUT: ${{secrets.QA_SPECIFIED_TIMEOUT}}
+      UAT_URL: ${{secrets.UAT_URL}}
+      UAT_SPECIFIED_TIMEOUT: ${{secrets.UAT_SPECIFIED_TIMEOUT}}
+      TEST_TIMEOUT: ${{secrets.TEST_TIMEOUT}}
+      EXPECT_TIMEOUT: ${{secrets.EXPECT_TIMEOUT}}
+      ACTION_TIMEOUT: ${{secrets.ACTION_TIMEOUT}}
+      NAV_TIMEOUT: ${{secrets.NAV_TIMEOUT}}
+      GLOBAL_TIMEOUT: ${{secrets.GLOBAL_TIMEOUT}}
+      RESTFUL_API_BASE_URL: ${{secrets.RESTFUL_API_BASE_URL}}
+      CRYPTO_SECRET: ${{secrets.CRYPTO_SECRET}}
+      RB_USERNAME: ${{secrets.RB_USERNAME}}
+      RB_PASSWORD: ${{secrets.RB_PASSWORD}}
 
     steps:
       # ── Setup ──────────────────────────────────────────────────────────────
