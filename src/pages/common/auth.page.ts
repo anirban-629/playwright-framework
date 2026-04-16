@@ -1,7 +1,10 @@
 import fs from "node:fs";
+import path from "node:path";
+import os from "node:os";
 import { AuthBasePage } from "../base/auth.base";
 import { expect } from "@playwright/test";
 import { logger } from "../../../config/logging";
+import { decrypt, encrypt } from "../../utils/helpers/encryption";
 
 export class AuthPage extends AuthBasePage {
 	// ── Locators ────────────────────────────────────────────────────────────
@@ -40,15 +43,26 @@ export class AuthPage extends AuthBasePage {
 	}
 
 	private async saveSession(username: string): Promise<void> {
-		this.ensureAuthDir();
-		await this.context.storageState({ path: this.getTokenPath(username) });
-		logger.info(`[${username}] - Session saved`);
+		await this.ensureAuthDir();
+		// Write Playwright storage state to a temp file first,
+		// then encrypt its contents into the .enc file
+		const tmpFile = path.join(os.tmpdir(), `${username}-session.json`);
+		try {
+			await this.context.storageState({ path: tmpFile });
+			const plaintext = fs.readFileSync(tmpFile, "utf-8");
+			const encrypted = encrypt(plaintext);
+			fs.writeFileSync(this.getTokenPath(username), encrypted, "utf-8");
+			logger.info(`[${username}] Session saved (encrypted)`);
+		} finally {
+			// Always clean up the plaintext temp file — even if encrypt throws
+			if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile);
+		}
 	}
 
 	private async loadSession(username: string): Promise<void> {
-		const storage = JSON.parse(
-			fs.readFileSync(this.getTokenPath(username), "utf-8"),
-		);
+		const encrypted = fs.readFileSync(this.getTokenPath(username), "utf-8");
+		const plaintext = decrypt(encrypted.trim());
+		const storage = JSON.parse(plaintext);
 		await this.context.addCookies(storage.cookies ?? []);
 	}
 
@@ -60,13 +74,20 @@ export class AuthPage extends AuthBasePage {
 		// Step 1: Try existing session
 		if (fs.existsSync(tokenPath)) {
 			logger.info(`[${username}] Session found — trying to reuse...`);
-			await this.loadSession(username);
-			if (await this.isSessionValid()) {
-				logger.info(`[${username}] Session valid — skipping login\n`);
-				return;
+			try {
+				await this.loadSession(username);
+				if (await this.isSessionValid()) {
+					logger.info(`[${username}] Session valid — skipping login\n`);
+					return;
+				}
+				logger.info(`[${username}] Session expired — logging in fresh...`);
+			} catch {
+				// Corrupted or tampered .enc file — discard and re-login
+				logger.warn(
+					`[${username}] Could not decrypt session — logging in fresh...`,
+				);
+				fs.unlinkSync(tokenPath);
 			}
-
-			logger.info(`[${username}] Session expired — logging in fresh...`);
 		} else {
 			logger.info(`[${username}] No session found — logging in fresh...`);
 		}

@@ -1,27 +1,12 @@
-import {
-	APIRequestContext,
-	test,
-	request,
-	APIResponse,
-	expect,
-} from "@playwright/test";
-import { config } from "../../../../../config/environments";
-
-let apiInstance: APIRequestContext;
-
-test.beforeAll(async () => {
-	const context = await request.newContext({
-		baseURL: config.RESTFUL_API_BASE_URL,
-	});
-	apiInstance = context;
-});
+import { APIResponse } from "@playwright/test";
+import { test, expect } from "../../../../fixtures";
 
 test.describe(
 	"Restful Booker API - Authentication",
-	{ tag: "@restfulbooker" },
+	{ tag: "@restfulbooker_auth" },
 	() => {
-		test("Health Check - API is up and running", async () => {
-			const response: APIResponse = await apiInstance.get(
+		test("TC1 - Health Check - API is up and running", async ({ rbAPI }) => {
+			const response: APIResponse = await rbAPI.get(
 				"/api/auth/actuator/health",
 			);
 			expect(response.status()).toBe(200);
@@ -33,8 +18,8 @@ test.describe(
 			expect(data.status).toContain("UP");
 		});
 
-		test("Login & Create token", async () => {
-			const response: APIResponse = await apiInstance.post("/api/auth/login", {
+		test("TC2 - Login & Create token", async ({ rbAPI }) => {
+			const response: APIResponse = await rbAPI.post("/api/auth/login", {
 				data: {
 					username: "admin",
 					password: "password",
@@ -45,8 +30,8 @@ test.describe(
 			expect(data.token).toBeDefined();
 		});
 
-		test("Validate token", async () => {
-			let response: APIResponse = await apiInstance.post("/api/auth/validate", {
+		test("TC3 - Validate token", async ({ rbAPI }) => {
+			let response: APIResponse = await rbAPI.post("/api/auth/validate", {
 				data: { token: "" },
 			});
 			expect(response.status()).toBe(401);
@@ -54,7 +39,7 @@ test.describe(
 			expect(data.error).toBeDefined();
 			expect(data.error).toBe("No token provided");
 
-			response = await apiInstance.post("/api/auth/validate", {
+			response = await rbAPI.post("/api/auth/validate", {
 				data: { token: "ABCD" },
 			});
 			console.log(response.url());
@@ -63,7 +48,7 @@ test.describe(
 			expect(data.error).toBeDefined();
 			expect(data.error).toBe("Invalid token");
 
-			response = await apiInstance.post("/api/auth/login", {
+			response = await rbAPI.post("/api/auth/login", {
 				data: {
 					username: "admin",
 					password: "password",
@@ -72,11 +57,69 @@ test.describe(
 			expect(response.status()).toBe(200);
 			data = await response.json();
 
-			response = await apiInstance.post("/api/auth/validate", {
+			response = await rbAPI.post("/api/auth/validate", {
 				data: { token: data.token },
 			});
 			console.log(data.token);
 			expect(response.status()).toBe(200);
+		});
+
+		test("TC4 - Auth POST /auth", async ({ rbAPI }) => {
+			const validRes = await rbAPI.post(`/api/auth/login`, {
+				data: { username: "admin", password: "password" },
+				headers: { "Content-Type": "application/json" },
+			});
+			expect(validRes.status()).toBe(200);
+			const validBody = await validRes.json();
+			expect(validBody).toHaveProperty("token");
+			expect(typeof validBody.token).toBe("string");
+			expect(validBody.token.length).toBeGreaterThan(0);
+			expect(validBody.token).not.toBe("Bad credentials");
+			expect(validRes.headers()["content-type"]).toContain("application/json");
+
+			// ── Wrong password → bad credentials ────────────────────
+			const wrongPassRes = await rbAPI.post(`/api/auth/login`, {
+				data: { username: "admin", password: "wrongpassword" },
+				headers: { "Content-Type": "application/json" },
+			});
+			expect(wrongPassRes.status()).toBe(401);
+			const wrongPassBody = await wrongPassRes.json();
+			expect(wrongPassBody.error).toBe("Invalid credentials");
+
+			// ── Wrong username → bad credentials ────────────────────
+			const wrongUserRes = await rbAPI.post(`/api/auth/login`, {
+				data: { username: "unknownuser", password: "password" },
+				headers: { "Content-Type": "application/json" },
+			});
+			expect(wrongUserRes.status()).toBe(401);
+			const wrongUserBody = await wrongUserRes.json();
+			expect(wrongUserBody.error).toBe("Invalid credentials");
+
+			// ── Empty credentials ────────────────────────────────────
+			const emptyRes = await rbAPI.post(`/api/auth/login`, {
+				data: { username: "", password: "" },
+				headers: { "Content-Type": "application/json" },
+			});
+			expect(emptyRes.status()).toBe(401);
+			const emptyBody = await emptyRes.json();
+			expect(emptyBody.error).toBe("Invalid credentials");
+
+			// ── Missing body entirely ────────────────────────────────
+			const missingRes = await rbAPI.post(`/api/auth/login`, {
+				data: {},
+				headers: { "Content-Type": "application/json" },
+			});
+			expect(missingRes.status()).toBe(401);
+			const missingBody = await missingRes.json();
+			expect(missingBody.error).toBeDefined();
+
+			// ── Response time SLA ────────────────────────────────────
+			const start = Date.now();
+			await rbAPI.post(`/api/auth/login`, {
+				data: { username: "admin", password: "password" },
+				headers: { "Content-Type": "application/json" },
+			});
+			expect(Date.now() - start).toBeLessThan(5000);
 		});
 	},
 );

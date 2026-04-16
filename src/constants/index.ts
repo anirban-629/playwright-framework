@@ -14,6 +14,7 @@ export const REQUIRED_ENVS: string[] = [
 	"ACTION_TIMEOUT",
 	"NAV_TIMEOUT",
 	"RESTFUL_API_BASE_URL",
+	"CRYPTO_SECRET",
 ];
 
 export const TODO_ITEMS = [

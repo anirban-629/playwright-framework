@@ -5,7 +5,7 @@ import type { BrowserContext, Page } from "@playwright/test";
 export abstract class AuthBasePage {
 	protected page: Page;
 	protected context: BrowserContext;
-	protected AUTH_DIR: string = "./auth-sessions";
+	protected AUTH_DIR: string = "./auth-sessions/UserSessions/";
 	protected BASE_URL: string;
 	protected INVENTORY_URL: string;
 
@@ -18,7 +18,7 @@ export abstract class AuthBasePage {
 
 	// ── Helpers ─────────────────────────────────────────────────────────────
 	protected getTokenPath(username: string) {
-		return path.join(this.AUTH_DIR, `${username}.json`);
+		return path.join(this.AUTH_DIR, `${username}.enc`);
 	}
 
 	protected async ensureAuthDir() {
