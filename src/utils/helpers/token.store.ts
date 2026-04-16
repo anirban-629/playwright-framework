@@ -7,7 +7,7 @@ import { logger } from "../../../config/logging";
 
 const TOKEN_FILE = path.resolve(
 	process.cwd(),
-	"./auth-sessions/RestfullBooker/.enc",
+	"./auth-sessions/RestfullBooker/RBooker.enc",
 );
 
 interface TokenPayload {
