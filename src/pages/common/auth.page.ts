@@ -1,4 +1,3 @@
-// biome-ignore assist/source/organizeImports: < >
 import fs from "node:fs";
 import { AuthBasePage } from "../base/auth.base";
 import { expect } from "@playwright/test";

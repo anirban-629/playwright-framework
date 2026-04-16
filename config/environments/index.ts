@@ -1,4 +1,3 @@
-// biome-ignore assist/source/organizeImports: <IMPORT SORT ERROR>
 import dotenv from "dotenv";
 import path from "node:path";
 

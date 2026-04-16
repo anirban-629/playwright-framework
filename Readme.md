@@ -211,12 +211,12 @@ Limits how long a **single test** is allowed to run end-to-end.
 ```typescript
 // playwright.config.ts
 export default defineConfig({
-  timeout: 60_000, // 60 seconds
+	timeout: 60_000, // 60 seconds
 });
 
 // Override per test
 test("slow test", async ({ page }) => {
-  test.setTimeout(120_000);
+	test.setTimeout(120_000);
 });
 ```
 
@@ -229,9 +229,9 @@ Controls how long individual actions like `click()`, `fill()`, `hover()` wait be
 ```typescript
 // playwright.config.ts
 export default defineConfig({
-  use: {
-    actionTimeout: 15_000, // 15 seconds
-  },
+	use: {
+		actionTimeout: 15_000, // 15 seconds
+	},
 });
 
 // Override per action
@@ -247,9 +247,9 @@ Controls how long `page.goto()` and `waitForNavigation()` wait for a page to loa
 ```typescript
 // playwright.config.ts
 export default defineConfig({
-  use: {
-    navigationTimeout: 30_000, // 30 seconds
-  },
+	use: {
+		navigationTimeout: 30_000, // 30 seconds
+	},
 });
 
 // Override per navigation
@@ -265,9 +265,9 @@ Defines how long assertions like `expect(locator).toBeVisible()` keep retrying b
 ```typescript
 // playwright.config.ts
 export default defineConfig({
-  expect: {
-    timeout: 10_000, // 10 seconds
-  },
+	expect: {
+		timeout: 10_000, // 10 seconds
+	},
 });
 
 // Override per assertion
@@ -283,7 +283,7 @@ Caps the **total execution time** for the entire test suite combined.
 ```typescript
 // playwright.config.ts
 export default defineConfig({
-  globalTimeout: 600_000, // 10 minutes
+	globalTimeout: 600_000, // 10 minutes
 });
 ```
 
@@ -305,24 +305,24 @@ await page.waitForTimeout(2000); // waits exactly 2 seconds
 import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
-  timeout: Number(process.env.PW_TEST_TIMEOUT) || 60_000,
-  globalTimeout: Number(process.env.PW_GLOBAL_TIMEOUT) || 600_000,
+	timeout: Number(process.env.PW_TEST_TIMEOUT) || 60_000,
+	globalTimeout: Number(process.env.PW_GLOBAL_TIMEOUT) || 600_000,
 
-  expect: {
-    timeout: Number(process.env.PW_EXPECT_TIMEOUT) || 10_000,
-  },
+	expect: {
+		timeout: Number(process.env.PW_EXPECT_TIMEOUT) || 10_000,
+	},
 
-  use: {
-    actionTimeout: Number(process.env.PW_ACTION_TIMEOUT) || 15_000,
-    navigationTimeout: Number(process.env.PW_NAV_TIMEOUT) || 30_000,
-  },
+	use: {
+		actionTimeout: Number(process.env.PW_ACTION_TIMEOUT) || 15_000,
+		navigationTimeout: Number(process.env.PW_NAV_TIMEOUT) || 30_000,
+	},
 
-  projects: [
-    {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
-    },
-  ],
+	projects: [
+		{
+			name: "chromium",
+			use: { ...devices["Desktop Chrome"] },
+		},
+	],
 });
 ```
 
@@ -399,6 +399,55 @@ PW_NAV_TIMEOUT=45000
 | Explicit Wait      | `page.waitForTimeout(ms)` | —                   | As specified            |
 
 ---
+
+## Biome (All in one - linter and prettier) Configuration (Removed from Project)
+
+```JSON
+{
+	"$schema": "https://biomejs.dev/schemas/2.3.8/schema.json",
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"files": {
+		"ignoreUnknown": false
+	},
+	"formatter": {
+		"enabled": true,
+		"formatWithErrors": false,
+		"attributePosition": "auto",
+		"indentStyle": "tab",
+		"indentWidth": 2,
+		"lineWidth": 80,
+		"lineEnding": "lf"
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true
+		}
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "double"
+		}
+	},
+	"assist": {
+		"enabled": true,
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
+		}
+	},
+	"json": {
+		"formatter": {
+			"trailingCommas": "none"
+		}
+	}
+}
+```
 
 ## Best Practices
 
