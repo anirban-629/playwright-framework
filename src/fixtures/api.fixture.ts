@@ -33,8 +33,8 @@ import {
 	request as playwrightRequest,
 } from "@playwright/test";
 import { config } from "../../config/environments";
-import { getToken, refreshToken } from "../utils/restfull-booker/token.store";
 import { logger } from "../../config/logging";
+import { getToken, refreshToken } from "../utils/helpers/token.store";
 
 type AuthFixtures = {
 	rbAPI: APIRequestContext;
