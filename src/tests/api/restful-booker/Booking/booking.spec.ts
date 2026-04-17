@@ -15,6 +15,14 @@ const getData = () => ({
 	},
 });
 
+test.beforeAll(({}, testInfo) => {
+	logger.testStart(testInfo.title);
+});
+
+test.afterAll(({}, testInfo) => {
+	logger.testEnd(testInfo.title, testInfo.status ? "PASSED" : "FAILED");
+});
+
 test.describe("Booking", { tag: ["@booking", "@rbooker"] }, () => {
 	test("TC1 - HealthCheck GET /ping", async ({ rbAPI }) => {
 		const response = await rbAPI.get(`/api/booking/actuator/health`);
@@ -28,7 +36,7 @@ test.describe("Booking", { tag: ["@booking", "@rbooker"] }, () => {
 	});
 
 	test("TC2 - Create Booking", async ({ rbAPI }) => {
-		const response = await rbAPI.post("/api/booking", {
+		const response = await rbAPI.post("/api/booking/1", {
 			data: getData(),
 		});
 		logger.info(response.status().toString());
@@ -36,85 +44,19 @@ test.describe("Booking", { tag: ["@booking", "@rbooker"] }, () => {
 		const data = await response.json();
 		logger.info(String(data));
 	});
+
+	test("TC3 - GET /booking returns a list of booking IDs", async ({
+		rbAPI,
+	}) => {
+		const response = await rbAPI.get("/api/booking");
+		expect(response.status()).toBe(200);
+		const body = await response.json();
+		expect(Array.isArray(body)).toBe(true);
+		expect(body.length).toBeGreaterThan(0);
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		body.forEach((item: any) => {
+			expect(item).toHaveProperty("bookingid");
+			expect(typeof item.bookingid).toBe("number");
+		});
+	});
 });
-
-// async createBooking(data: IRBBooking): Promise<APIResponse | undefined> {
-// 		try {
-// 			this.validateAuthorization();
-// 			const response = await this.apiInstance!.post("/api/booking", {
-// 				data,
-// 				headers: this.getAuthHeaders(),
-// 			});
-// 			return response;
-// 		} catch (error) {
-// 			logger.error("Failed to create booking");
-// 			throw error;
-// 		}
-// 	}
-
-// 	/**
-// 	 * Get booking by ID
-// 	 */
-// 	async getBooking(bookingId: number): Promise<APIResponse | undefined> {
-// 		try {
-// 			this.validateAuthorization();
-// 			logger.info(`Fetching booking with ID: ${bookingId}`);
-// 			const response = await this.apiInstance!.get(
-// 				`/api/booking/${bookingId}`,
-// 				{
-// 					headers: this.getAuthHeaders(),
-// 				},
-// 			);
-// 			logger.info(`Booking ${bookingId} retrieved successfully`);
-// 			return response;
-// 		} catch (error) {
-// 			logger.error(`Failed to fetch booking ${bookingId}`);
-// 			throw error;
-// 		}
-// 	}
-
-// 	/**
-// 	 * Update an existing booking
-// 	 */
-// 	async updateBooking(
-// 		bookingId: number,
-// 		data: IRBUpdateBooking,
-// 	): Promise<APIResponse | undefined> {
-// 		try {
-// 			this.validateAuthorization();
-// 			logger.info(`Updating booking ${bookingId}`);
-// 			const response = await this.apiInstance!.put(
-// 				`/api/booking/${bookingId}`,
-// 				{
-// 					data,
-// 					headers: this.getAuthHeaders(),
-// 				},
-// 			);
-// 			logger.info(`Booking ${bookingId} updated successfully`);
-// 			return response;
-// 		} catch (error) {
-// 			logger.error(`Failed to update booking ${bookingId}`);
-// 			throw error;
-// 		}
-// 	}
-
-// 	/**
-// 	 * Delete a booking
-// 	 */
-// 	async deleteBooking(bookingId: number): Promise<APIResponse | undefined> {
-// 		try {
-// 			this.validateAuthorization();
-// 			logger.info(`Deleting booking ${bookingId}`);
-// 			const response = await this.apiInstance!.delete(
-// 				`/api/booking/${bookingId}`,
-// 				{
-// 					headers: this.getAuthHeaders(),
-// 				},
-// 			);
-// 			logger.info(`Booking ${bookingId} deleted successfully`);
-// 			return response;
-// 		} catch (error) {
-// 			logger.error(`Failed to delete booking ${bookingId}`);
-// 			throw error;
-// 		}
-// 	}

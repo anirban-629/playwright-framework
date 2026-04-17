@@ -178,3 +178,4 @@ logs/*
 ortoni-report
 custom-report
 auth-sessions
+.vscode
