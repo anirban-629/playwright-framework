@@ -14,9 +14,9 @@ full_pattern="^\[($allowed)\]: .+"
 if ! echo "$commit_msg" | grep -qE "$type_pattern"; then
   echo ""
   echo "FAILED: Invalid commit type!"
-  echo "Allowed types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert"
+  echo "Allowed types: FEAT, FIX, DOCS, STYLE, REFACTOR, PERF, TEST, BUILD, CI, CHORE, REVERT, DEPS"
   echo "Your commit type must be one of those."
-  echo "Example: feat(auth): add login, fix(api): handle null"
+  echo "Example: [FEAT]: added login, [FIX]: handle null"
   echo ""
   exit 1
 fi
@@ -25,8 +25,8 @@ fi
 if ! echo "$commit_msg" | grep -qE "$full_pattern"; then
   echo ""
   echo "FAILED: Invalid commit message format!"
-  echo "Allowed format: type(scope): subject"
-  echo "Example: feat(auth): add login, fix(api): handle null"
+  echo "Allowed format: [type]: subject"
+  echo "Example: [FEAT]: added login, [FIX]: handle null"
   echo ""
   exit 1
 fi

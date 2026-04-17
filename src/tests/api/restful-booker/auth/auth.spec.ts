@@ -3,7 +3,7 @@ import { test, expect } from "../../../../fixtures";
 
 test.describe(
 	"Restful Booker API - Authentication",
-	{ tag: "@restfulbooker_auth" },
+	{ tag: ["@restfulbooker_auth", "@rbooker"] },
 	() => {
 		test("TC1 - Health Check - API is up and running", async ({ rbAPI }) => {
 			const response: APIResponse = await rbAPI.get(

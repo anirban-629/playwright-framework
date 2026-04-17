@@ -15,7 +15,7 @@ const getData = () => ({
 	},
 });
 
-test.describe("Booking", { tag: "@booking" }, () => {
+test.describe("Booking", { tag: ["@booking", "@rbooker"] }, () => {
 	test("TC1 - HealthCheck GET /ping", async ({ rbAPI }) => {
 		const response = await rbAPI.get(`/api/booking/actuator/health`);
 		expect(response.status()).toBe(200);
