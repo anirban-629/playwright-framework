@@ -24,8 +24,7 @@ let memoryCache: TokenPayload | null = null;
  * Returns a valid token.
  * Priority: memory cache → .enc file → fresh auth call
  */
-
-export async function getToken(URL: string): Promise<string> {
+export const getToken = async (URL: string): Promise<string> => {
 	if (memoryCache) {
 		logger.info("Memory Cache available. Returning Token...");
 		return memoryCache.token;
@@ -38,20 +37,19 @@ export async function getToken(URL: string): Promise<string> {
 	}
 
 	return fetchAndStore(URL);
-}
+};
 
 /**
  * Forces a fresh auth call, overwrites .enc + memory cache.
  * Called automatically by the self-healing proxy on 401/403.
  */
-export async function refreshToken(URL: string): Promise<string> {
+export const refreshToken = (URL: string): Promise<string> => {
 	memoryCache = null;
 	return fetchAndStore(URL);
-}
+};
 
 // ─── Internal ────────────────────────────────────────────────────────────────
-
-async function fetchAndStore(URL: string): Promise<string> {
+const fetchAndStore = async (URL: string): Promise<string> => {
 	logger.warn("Trying to fetch token from encrypted file");
 	const token = await fetchTokenFromAPI(URL);
 	logger.warn("Token found");
@@ -61,9 +59,9 @@ async function fetchAndStore(URL: string): Promise<string> {
 	memoryCache = payload;
 
 	return token;
-}
+};
 
-async function fetchTokenFromAPI(URL: string): Promise<string> {
+const fetchTokenFromAPI = async (URL: string): Promise<string> => {
 	const username = config.RB_USERNAME;
 	const password = config.RB_PASSWORD;
 
@@ -97,13 +95,11 @@ async function fetchTokenFromAPI(URL: string): Promise<string> {
 			`[token-store] Auth rejected — check RB_USERNAME / RB_PASSWORD`,
 		);
 	}
-
 	return body.token as string;
-}
+};
 
 // ─── File I/O ─────────────────────────────────────────────────────────────────
-
-function readFromFile(): TokenPayload | null {
+const readFromFile = (): TokenPayload | null => {
 	try {
 		if (!fs.existsSync(TOKEN_FILE)) return null;
 		logger.info("Retrieving encrypted data from the .enc file");
@@ -116,9 +112,9 @@ function readFromFile(): TokenPayload | null {
 		logger.warn("[token-store] Could not read .auth/token.enc — will re-fetch");
 		return null;
 	}
-}
+};
 
-function writeToFile(payload: TokenPayload): void {
+const writeToFile = (payload: TokenPayload): void => {
 	const dir = path.dirname(TOKEN_FILE);
 
 	if (!fs.existsSync(dir)) {
@@ -128,4 +124,4 @@ function writeToFile(payload: TokenPayload): void {
 	const encrypted = encrypt(JSON.stringify(payload));
 	logger.info("Writing encrypted data to the .enc file");
 	fs.writeFileSync(TOKEN_FILE, encrypted, "utf-8");
-}
+};
